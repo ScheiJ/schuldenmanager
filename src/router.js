@@ -22,6 +22,11 @@ export default new Router({
       path: '/newDebt',
       name: 'NewDebt',
       component: () => import('./views/NewDebt.vue')
+    },
+    {
+      path: '/time',
+      name: 'Time',
+      component: () => import('./views/Time.vue')
     }
   ]
 })

@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-row>
-        <v-col cols="1" class="mt-5 mr-3">
+        <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
             <div class="circle" @click="turnAround" v-bind:class="{ turnGreen: isGreen, turnRed: isGreen === false}"></div>
         </v-col>
-        <v-col class="mt-3 ml-3">
+        <v-col class="mt-3 ml-3 pb-0">
             <v-text-field 
             type="number"
             solo
@@ -16,8 +16,9 @@
             single-line
             ></v-text-field>
         </v-col>
-        <v-col class="mt-3 col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4">
+        <v-col class="mt-3 col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pb-0">
             <v-text-field
+            @click="$router.push('/time')"
             type="text"
             solo
             flat
@@ -31,9 +32,9 @@
         </v-col>
     </v-row>
     <v-row>
-        <v-col cols="1" class="mr-3">
+        <v-col cols="1" class="ml-3 mr-0 pt-0">
         </v-col>
-        <v-col class="ml-3">
+        <v-col class="ml-3 pt-0">
             <v-textarea
             id="textFieldDescription"
             label="Keine Beschreibung"
@@ -42,7 +43,7 @@
             no-resize
             ></v-textarea>
         </v-col>
-        <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4">
+        <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pt-0">
             <v-btn
             depressed
             color="#ffffff"
@@ -70,13 +71,10 @@
     data: () => {
       return {
         isGreen: null,
-        selectedDay: "0" + String(new Date().getDate()),
-        selectedMonth: new Date().getMonth(),
-        selectedYear: new Date().getFullYear(),
       }
     },
     computed: {
-      ...mapState(["selectedPerson"]),
+      ...mapState(["selectedPerson", "selectedDay", "selectedMonth", "selectedYear"]),
       selectedDate: function () {
         var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
         var month = new Array();
