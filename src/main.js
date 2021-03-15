@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
+import "./plugins/vuetify-money.js";
 
 Vue.config.productionTip = false
 

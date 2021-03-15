@@ -31,11 +31,11 @@ export default {
         this.$store.dispatch('updateTimeCloseButton', "Schließen")
     },
     watch: {
-        picker: function() {
-            this.$store.dispatch('updateSelectedDay', this.picker.substr(8, 2));
-            this.$store.dispatch('updateSelectedMonth', Number(this.picker.substr(5, 2))-1);
-            this.$store.dispatch('updateSelectedYear', this.picker.substr(0, 4));
-        }
+      picker: function() {
+        this.$store.dispatch('updateSelectedDay', this.picker.substr(8, 2));
+        this.$store.dispatch('updateSelectedMonth', Number(this.picker.substr(5, 2))-1);
+        this.$store.dispatch('updateSelectedYear', this.picker.substr(0, 4));
+      }
     }
 }
 </script>

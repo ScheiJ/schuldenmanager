@@ -5,16 +5,18 @@
             <div class="circle" @click="turnAround" v-bind:class="{ turnGreen: isGreen, turnRed: isGreen === false}"></div>
         </v-col>
         <v-col class="mt-3 ml-3 pb-0">
-            <v-text-field 
-            type="number"
-            solo
-            flat
-            filled
-            placeholder="0,00"
+          <vuetify-money
+            v-model="amount"
+            v-bind:placeholder="placeholder"
+            v-bind:readonly="readonly"
+            v-bind:disabled="disabled"
+            v-bind:outlined="outlined"
+            v-bind:clearable="clearable"
+            v-bind:valueWhenIsEmpty="valueWhenIsEmpty"
+            v-bind:options="options"
+            v-bind:properties="properties"
             class="centered-input"
-            suffix=" €"
-            single-line
-            ></v-text-field>
+          />
         </v-col>
         <v-col class="mt-3 col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pb-0">
             <v-text-field
@@ -36,8 +38,11 @@
         </v-col>
         <v-col class="ml-3 pt-0">
             <v-textarea
+            v-model="description"
             id="textFieldDescription"
             label="Keine Beschreibung"
+            background-color="#EEEEEE"
+            style="border: 2px solid #FFFFFF"
             solo
             flat
             no-resize
@@ -70,11 +75,28 @@
     },
     data: () => {
       return {
-        isGreen: null,
+        placeholder: "0,00",
+        readonly: false,
+        disabled: false,
+        outlined: false,
+        clearable: false,
+        valueWhenIsEmpty: "",
+        options: {
+          locale: "de-de",
+          prefix: "",
+          suffix: "€",
+          length: 11,
+          precision: 2
+        },
+        properties: {
+          filled: "filled",
+          solo: "solo",
+          flat: "flat"
+        },
       }
     },
     computed: {
-      ...mapState(["selectedPerson", "selectedDay", "selectedMonth", "selectedYear"]),
+      ...mapState(["selectedPerson", "isGreen", "amount", "description", "selectedDay", "selectedMonth", "selectedYear"]),
       selectedDate: function () {
         var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
         var month = new Array();
@@ -91,16 +113,32 @@
         month[10] = "Nov.";
         month[11] = "Dez.";
         return this.selectedDay + ". " + month[d.getMonth()];
-      }
+      },
+      amount: {
+        get() {
+          return this.$store.state.amount;
+        },
+        set(value) {
+          this.$store.dispatch('updateAmount', value);
+        }
+      },
+      description: {
+        get() {
+          return this.$store.state.description;
+        },
+        set(value) {
+          this.$store.dispatch('updateDescription', value);
+        }
+      },
     },
     mounted: function () {
         document.getElementById("textFieldDescription").setAttribute("rows", window.innerHeight/45)
     },
     methods: {
-        turnAround() {
-            if(this.isGreen === null) this.isGreen = false;
-            else this.isGreen = !this.isGreen;
-        }
+      turnAround() {
+          if(this.isGreen === null) this.$store.dispatch("updateIsGreen", false);
+          else this.$store.dispatch("updateIsGreen", !this.isGreen);
+      },
     }
   }
 </script>

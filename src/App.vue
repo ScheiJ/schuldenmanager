@@ -26,7 +26,7 @@
 
       <!-- Rechte Seite -->
       <router-link v-if="$route.path === '/'" style="text-decoration: none;" to="/selectPerson"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
-      <router-link v-if="$route.path === '/newDebt'" style="text-decoration: none; color: #4FC3F7" to="/">Sichern</router-link>
+      <v-toolbar-items v-if="$route.path === '/newDebt'" class="mt-8" style="text-decoration: none; color: #4FC3F7; cursor: pointer;" @click="save">Sichern</v-toolbar-items>
       <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/newDebt">{{ timeCloseButton }}</router-link>
     </v-app-bar>
 
@@ -39,17 +39,58 @@
 </template>
 
 <script>
+  import PersonsService from "@/services/PersonsService";
   import { mapState } from "vuex";
   export default {
     name: 'App',
-
     data: () => ({
       
     }),
     computed: {
-      ...mapState(["selectedPerson", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton"])
+      ...mapState(["persons", "selectedPerson", "isGreen", "amount", "description", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
     },
     methods: {
+      async save(){
+        // Überprüfen, ob es die Person schon gibt
+        let personInArray = this.persons.filter(person => {
+          return person.name === this.selectedPerson;
+        })
+        //Wenn es die Person noch nicht gibt, dann wird die Person neu erstellt, Debt hinzugefügt und gleich der Gesamtamount gesetzt
+        if(personInArray.length === 0){
+          await PersonsService.addPerson({
+            name: this.selectedPerson,
+            amount: this.isGreen===false ? -this.amount: this.amount,
+            openDebts: {
+              isGreen: this.isGreen===false ? false : true,
+              amount: this.amount,
+              description: this.description,
+              date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+            },
+            archivedDebts: []
+          });
+        }
+        // Wenn es die Person schon gibt
+        else {
+          await PersonsService.addDebt({
+            person: this.selectedPerson,
+            debt: {
+              isGreen: this.isGreen===false ? false : true,
+              amount: this.amount,
+              description: this.description,
+              date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+            }
+          })
+        }
+  
+        this.$store.dispatch('updateIsGreen', null);
+        this.$store.dispatch('updateAmount', null);
+        this.$store.dispatch('updateDescription', "");
+        this.$store.dispatch('updateSelectedDay', new Date().getDate());
+        this.$store.dispatch('updateSelectedMonth', new Date().getMonth());
+        this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
+        this.$store.dispatch('updateSelectedPerson', "");
+        this.$router.push('/');
+      },
       updateHeadingSelectPerson() {
         this.$store.dispatch('updateSelectedPersonPageTitle', 'Bearbeiten');
         this.$store.dispatch('updateSelectedPersonPageBack', this.selectedPerson);
