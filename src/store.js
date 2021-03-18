@@ -11,7 +11,7 @@ export default new Vuex.Store({
     selectedPersonPageTitle: 'Neu',
     timeCloseButton: "Schließen",
     isGreen: null,
-    amount: null,
+    amount: "0.00",
     description: "",
     selectedDay: new Date().getDate(),
     selectedMonth: new Date().getMonth(),

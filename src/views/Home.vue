@@ -57,14 +57,14 @@
         </v-col>
       </v-row>
     </v-item-group>
-    <v-row>
+    <v-row class="mb-14">
       <v-col class="pa-0">
         <v-list class="pa-0 mx-0">
           <v-list-item-group v-for="person in filterPersons(persons)" v-bind:key="person._id" style="background-color: #EEEEEE">
             <v-subheader v-if="person.amount.$numberDecimal > 0" class="pt-10 pb-4"><strong class="mr-2">{{ person.name }}</strong>schuldet mir {{ person.amount.$numberDecimal.replace(".", ",") }} €</v-subheader>
             <v-subheader v-if="person.amount.$numberDecimal == 0" class="pt-10 pb-4"><strong class="mr-2">{{ person.name }}</strong>schuldet mir {{ person.amount.$numberDecimal.replace(".", ",") }},00 €</v-subheader>
             <v-subheader v-if="person.amount.$numberDecimal < 0" class="pt-10 pb-4"><strong class="mr-2">{{ person.name }}</strong>hat mir {{ person.amount.$numberDecimal.replace(".", ",").substring(1) }},00 € geliehen</v-subheader>
-              <v-list-item v-for="debt in filterDebts(person)" :key="debt._id" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
+              <v-list-item v-for="debt in filterDebts(person)" :key="debt._id" @click="showFinishedDebt(person, debt)" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
                 <v-list-item-icon v-bind:class="{ 'mt-5': debt.description !== '' }">
                   <div class="circle" v-bind:class="{ red: debt.isGreen === false }"></div>
                 </v-list-item-icon>
@@ -73,7 +73,7 @@
                   <v-list-item-title>{{ debt.description }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-icon>
-                  {{ debt.amount.$numberDecimal }} €
+                  {{ debt.amount.$numberDecimal.replace(".", ",") }} €
                   <v-icon
                   class="ml-3"
                   small
@@ -82,6 +82,25 @@
                 </v-list-item-icon>
               </v-list-item>
           </v-list-item-group>
+        </v-list>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0">
+        <v-list class="pa-0 mx-0">
+          <v-list-item dark style="background-color: #37474F; position: fixed; left: 0; bottom: 0; width: 100%;">
+            <v-list-item-content>
+              <v-list-item-title>Gesamt:</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-icon v-if="total >= 0">
+              {{ total }},00 €
+              <v-icon class="circle ml-3"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-icon v-if="total < 0">
+              {{ total.toString().substring(1) }},00 €
+              <v-icon class="circle ml-3" v-bind:class="{ red: total < 0 }"></v-icon>
+            </v-list-item-icon>
+          </v-list-item>
         </v-list>
       </v-col>
     </v-row>
@@ -102,15 +121,31 @@
       debtsToShow: []
     }),
     computed: {
-      ...mapState(["persons"])
+      ...mapState(["persons", "selectedPerson", "isGreen", "amount", "description", "selectedDay", "selectedMonth", "selectedYear"]),
+      total: function () {
+        let initialValue = 0;
+        return this.persons.reduce(function (accumulator, currentValue) {
+          return accumulator + parseInt(currentValue.amount.$numberDecimal)
+        },initialValue)
+      }
     },
     mounted: function() {
       this.fetchAllPersons();
+      this.resetStates();
     },
     methods: {
       async fetchAllPersons() {
         let persons = await PersonsService.fetchAllPersons();
         this.$store.dispatch("updatePersons", persons.data.persons);
+      },
+      resetStates() {
+        this.$store.dispatch('updateIsGreen', null);
+        this.$store.dispatch('updateAmount', "0.00");
+        this.$store.dispatch('updateDescription', "");
+        this.$store.dispatch('updateSelectedDay', new Date().getDate());
+        this.$store.dispatch('updateSelectedMonth', new Date().getMonth());
+        this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
+        this.$store.dispatch('updateSelectedPerson', "");
       },
       getNormalFormat(date){
         let newDate = new Date(date)
@@ -184,6 +219,17 @@
           debtsToReturn.push(person.archivedDebts)
         }
         return debtsToReturn[0];
+      },
+      showFinishedDebt(person, debt) {
+        this.$store.dispatch("updateSelectedPerson", person.name);
+        this.$store.dispatch("updateIsGreen", debt.isGreen);
+        this.$store.dispatch("updateAmount", debt.amount);
+        this.$store.dispatch("updateDescription", debt.description);
+        let debtDate = debt.date;
+        this.$store.dispatch("updateSelectedDay", parseInt(debtDate.substr(8, 2)));
+        this.$store.dispatch("updateSelectedMonth", parseInt(debtDate.substr(5, 2)));
+        this.$store.dispatch("updateSelectedYear", parseInt(debtDate.substr(0, 4)));
+        this.$router.push('finishedDebt');
       }
     }
   }

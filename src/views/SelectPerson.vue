@@ -71,7 +71,7 @@
       async selectPerson() {
         if(this.person) {
           if(this.selectedPerson !== this.person) this.$store.dispatch("updateSelectedPerson", this.person);
-          this.$router.push('newDebt');
+          this.$router.push('modifyDebt');
         }
       },
       setAndSelectPerson(name) {

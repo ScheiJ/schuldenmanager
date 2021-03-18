@@ -10,24 +10,27 @@
       <!-- Linke Seite -->
       <v-app-bar-nav-icon v-if="$route.path == '/'" color="light-blue lighten-2"></v-app-bar-nav-icon>
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" style="text-decoration: none; color: #4FC3F7" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" style="text-decoration: none; color: #4FC3F7" to="/newDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/newDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPerson }}</router-link>
-      <v-toolbar-items v-if="$route.path === '/newDebt'" class="mt-8" @click="resetHeadingSelectPerson" style="text-decoration: none; color: #4FC3F7; cursor: pointer;">Abbrechen</v-toolbar-items>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/finishedDebt'" style="text-decoration: none; color: #4FC3F7" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>Zurück</router-link>
+      <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPerson }}</router-link>
+      <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="mt-8" @click="resetHeadingSelectPerson" style="text-decoration: none; color: #4FC3F7; cursor: pointer;">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
 
       <!-- Mitte -->
       <v-toolbar-title v-if="$route.path === '/'" class="app-title-font">still waitin</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/selectPerson'">{{ selectedPersonPageTitle }}</v-toolbar-title>
-      <v-toolbar-title v-if="$route.path === '/newDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPerson }}</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/modifyDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPerson }}</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/finishedDebt'">{{ selectedPerson }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/time'" style="color: white; cursor: pointer;">Datum</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <!-- Rechte Seite -->
       <router-link v-if="$route.path === '/'" style="text-decoration: none;" to="/selectPerson"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
-      <v-toolbar-items v-if="$route.path === '/newDebt'" class="mt-8" style="text-decoration: none; color: #4FC3F7; cursor: pointer;" @click="save">Sichern</v-toolbar-items>
-      <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/newDebt">{{ timeCloseButton }}</router-link>
+      <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="mt-8" style="text-decoration: none; color: #4FC3F7; cursor: pointer;" @click="save">Sichern</v-toolbar-items>
+      <router-link v-if="$route.path === '/finishedDebt'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt">Bearbeiten</router-link>
+      <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt">{{ timeCloseButton }}</router-link>
     </v-app-bar>
 
     <v-main style="background-color: #EEEEEE;">
@@ -81,14 +84,6 @@
             }
           })
         }
-  
-        this.$store.dispatch('updateIsGreen', null);
-        this.$store.dispatch('updateAmount', null);
-        this.$store.dispatch('updateDescription', "");
-        this.$store.dispatch('updateSelectedDay', new Date().getDate());
-        this.$store.dispatch('updateSelectedMonth', new Date().getMonth());
-        this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
-        this.$store.dispatch('updateSelectedPerson', "");
         this.$router.push('/');
       },
       updateHeadingSelectPerson() {

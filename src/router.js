@@ -19,14 +19,19 @@ export default new Router({
       component: () => import('./views/SelectPerson.vue')
     },
     {
-      path: '/newDebt',
-      name: 'NewDebt',
-      component: () => import('./views/NewDebt.vue')
+      path: '/modifyDebt',
+      name: 'ModifyDebt',
+      component: () => import('./views/ModifyDebt.vue')
     },
     {
       path: '/time',
       name: 'Time',
       component: () => import('./views/Time.vue')
+    },
+    {
+      path: '/finishedDebt',
+      name: 'FinishedDebt',
+      component: () => import('./views/FinishedDebt.vue')
     }
   ]
 })

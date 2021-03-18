@@ -36,13 +36,12 @@
     <v-row>
         <v-col cols="1" class="ml-3 mr-0 pt-0">
         </v-col>
-        <v-col class="ml-3 pt-0">
+        <v-col class="pt-0">
             <v-textarea
             v-model="description"
             id="textFieldDescription"
             label="Keine Beschreibung"
             background-color="#EEEEEE"
-            style="border: 2px solid #FFFFFF"
             solo
             flat
             no-resize
@@ -68,7 +67,7 @@
 <script>
   import { mapState } from "vuex";
   export default {
-    name: 'NewDebt',
+    name: 'ModifyDebt',
 
     components: {
       //HelloWorld,
