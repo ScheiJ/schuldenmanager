@@ -2,10 +2,11 @@
   <div>
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
-            <div class="circle" v-bind:class="{ green: isGreen, red: isGreen === false}"></div>
+            <div v-if="!archived" class="circle" v-bind:class="{ green: isPositive, red: isPositive === false}"></div>
+            <v-icon v-if="archived">mdi-check</v-icon>
         </v-col>
         <v-col class="mt-4 ml-3 pb-0">
-          <h1>{{ amount.$numberDecimal.replace(".", ",") }} €</h1>
+          <h1>{{ amount.replace(".", ",") }} €</h1>
         </v-col>
         <v-col class="mt-3 col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pb-0">
             <v-text-field
@@ -46,9 +47,42 @@
                 <v-list-item-icon>
                   <v-icon style="color: #4FC3F7">mdi-trash-can-outline</v-icon>
                 </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title style="color: #4FC3F7">Archivieren</v-list-item-title>
+                <v-list-item-content @click="overlay = !overlay">
+                    <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
+                    <v-list-item-title v-if="archived === true" style="color: #4FC3F7">Löschen</v-list-item-title>
                 </v-list-item-content>
+                <v-overlay
+                :absolute="absolute"
+                :opacity="opacity"
+                :value="overlay"
+                >
+                    <v-row justify="space-around">
+                        <v-col>
+                            <v-card
+                            class="d-flex align-center mx-auto"
+                            height="40px"
+                            style="border: 1px solid #4FC3F7"
+                            @click="toggleArchiveDebt"
+                            >
+                            <v-card-text v-if="!archived" style="color: #4FC3F7" class="text-center">Archivieren</v-card-text>
+                            <v-card-text v-if="archived" style="color: #4FC3F7; line-height: 1.2;" class="text-center">Als offen markieren</v-card-text>
+                            </v-card>
+                        </v-col>
+                        <v-col>
+                            <v-card
+                            class="d-flex align-center mx-auto"
+                            height="40px"
+                            style="border: 1px solid #4FC3F7"
+                            @click="deleteDebt"
+                            >
+                            <v-card-text style="color: #4FC3F7" class="text-center">Löschen</v-card-text>
+                            </v-card>
+                        </v-col>
+                        <v-col>
+                            <v-icon @click="overlay = false" class="mt-2" color="light-blue lighten-2">mdi-close</v-icon>
+                        </v-col>
+                    </v-row>
+                </v-overlay>
               </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -58,6 +92,7 @@
 </template>
 
 <script>
+import DebtsService from "@/services/DebtsService";
 import { mapState } from "vuex";
 export default {
     name: 'FinishedDebt',
@@ -66,11 +101,13 @@ export default {
     },
     data () {
       return {
-        
+        absolute: true,
+        opacity: 1,
+        overlay: false,
       }
     },
     computed: {
-      ...mapState(["selectedPerson", "isGreen", "amount", "description", "selectedDay", "selectedMonth", "selectedYear"]),
+      ...mapState(["selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived"]),
       selectedDate: function () {
         var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
         var month = new Array();
@@ -92,8 +129,17 @@ export default {
     mounted: function () {
         document.getElementById("textFieldDescription").setAttribute("rows", window.innerHeight/60)
     },
-    watch: {
-      
+    methods: {
+        async toggleArchiveDebt() {
+            await DebtsService.toggleArchiveDebt({
+                id: this.selectedDebtId,
+            });    
+            this.$router.push("/")
+        },
+        async deleteDebt() {
+            await DebtsService.deleteDebt(this.selectedDebtId);    
+            this.$router.push("/")
+        }
     }
 }
 </script>

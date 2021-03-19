@@ -60,13 +60,15 @@
     <v-row class="mb-14">
       <v-col class="pa-0">
         <v-list class="pa-0 mx-0">
-          <v-list-item-group v-for="person in filterPersons(persons)" v-bind:key="person._id" style="background-color: #EEEEEE">
-            <v-subheader v-if="person.amount.$numberDecimal > 0" class="pt-10 pb-4"><strong class="mr-2">{{ person.name }}</strong>schuldet mir {{ person.amount.$numberDecimal.replace(".", ",") }} €</v-subheader>
-            <v-subheader v-if="person.amount.$numberDecimal == 0" class="pt-10 pb-4"><strong class="mr-2">{{ person.name }}</strong>schuldet mir {{ person.amount.$numberDecimal.replace(".", ",") }},00 €</v-subheader>
-            <v-subheader v-if="person.amount.$numberDecimal < 0" class="pt-10 pb-4"><strong class="mr-2">{{ person.name }}</strong>hat mir {{ person.amount.$numberDecimal.replace(".", ",").substring(1) }},00 € geliehen</v-subheader>
-              <v-list-item v-for="debt in filterDebts(person)" :key="debt._id" @click="showFinishedDebt(person, debt)" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
-                <v-list-item-icon v-bind:class="{ 'mt-5': debt.description !== '' }">
-                  <div class="circle" v-bind:class="{ red: debt.isGreen === false }"></div>
+          <v-list-item-group v-for="person in filterPersons()" v-bind:key="person" style="background-color: #EEEEEE">
+            <v-subheader v-if="getAmountOfPerson(person) >= 0" class="pt-10 pb-4"><strong class="mr-2">{{ person }}</strong>schuldet mir {{ getAmountOfPerson(person).replace(".", ",") }},00 €</v-subheader>
+            <v-subheader v-if="getAmountOfPerson(person) < 0" class="pt-10 pb-4"><strong class="mr-2">{{ person }}</strong>hat mir {{ getAmountOfPerson(person).replace(".", ",").substring(1) }},00 € geliehen</v-subheader>
+              <v-list-item v-for="debt in filterDebts(person)" :key="debt._id" @click="showFinishedDebt(debt)" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
+                <v-list-item-icon v-if="!debt.archived" v-bind:class="{ 'mt-5': debt.description !== '' }">
+                  <div  class="circle" v-bind:class="{ red: debt.isPositive === false }"></div>
+                </v-list-item-icon>
+                <v-list-item-icon v-if="debt.archived" v-bind:class="{ 'mt-5': debt.description !== '' }">
+                  <v-icon>mdi-check</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-subtitle>{{ getNormalFormat(debt.date) }}</v-list-item-subtitle>
@@ -109,7 +111,7 @@
 
 <script>
   import { mapState } from "vuex";
-  import PersonsService from "@/services/PersonsService";
+  import DebtsService from "@/services/DebtsService";
   export default {
     name: 'Home',
     components: {
@@ -118,86 +120,69 @@
     data: () => ({
       searchInput: "",
       selectedDebts: 0,
-      debtsToShow: []
     }),
     computed: {
-      ...mapState(["persons", "selectedPerson", "isGreen", "amount", "description", "selectedDay", "selectedMonth", "selectedYear"]),
+      ...mapState(["persons", "debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived"]),
       total: function () {
-        let initialValue = 0;
-        return this.persons.reduce(function (accumulator, currentValue) {
-          return accumulator + parseInt(currentValue.amount.$numberDecimal)
-        },initialValue)
+        let initial = 0;
+        return this.persons.reduce((accumulator, currentValue) => {
+          let arrayCurrentValue = this.filterDebts(currentValue)
+          let ini = 0;
+          let amountCurrentValue = arrayCurrentValue.reduce((acc, current) => {
+            return acc + parseInt(current.amount.$numberDecimal);
+          }, ini)
+          return accumulator + amountCurrentValue;
+        },initial)
+      },
+      offen: function() {
+        return this.selectedDebts === 0 || this.selectedDebts === 2;
+      },
+      archiviert: function() {
+        return this.selectedDebts === 1 || this.selectedDebts === 2;
       }
     },
     mounted: function() {
-      this.fetchAllPersons();
+      this.fetchAllDebts();
       this.resetStates();
     },
     methods: {
-      async fetchAllPersons() {
-        let persons = await PersonsService.fetchAllPersons();
-        this.$store.dispatch("updatePersons", persons.data.persons);
+      async fetchAllDebts() {
+        let debts = await DebtsService.fetchAllDebts();
+        debts = debts.data.debts;
+        this.$store.dispatch("updateDebts", debts);
+        let persons = [];
+        debts.forEach(debt => {
+          if(!persons.includes(debt.person)) {
+            persons.push(debt.person)
+          }
+        })
+        this.$store.dispatch("updatePersons", persons);
       },
       resetStates() {
-        this.$store.dispatch('updateIsGreen', null);
+        this.$store.dispatch('updateSelectedDebtId', 0);
+        this.$store.dispatch('updateIsPositive', null);
         this.$store.dispatch('updateAmount', "0.00");
         this.$store.dispatch('updateDescription', "");
         this.$store.dispatch('updateSelectedDay', new Date().getDate());
         this.$store.dispatch('updateSelectedMonth', new Date().getMonth());
         this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
         this.$store.dispatch('updateSelectedPerson', "");
+        this.$store.dispatch('updateArchived', false);
       },
       getNormalFormat(date){
         let newDate = new Date(date)
         let year = newDate.getFullYear();
-        let month = newDate.getMonth();
+        let month = newDate.getMonth()+1;
         if (month.toString().length === 1) month = "0" + month;
         let day = newDate.getDate();
         if (day.toString().length === 1) day = "0" + day; 
         return day + "." + month + "." +  year;
       },
-      filterPersons(persons) {
-        let offen = this.selectedDebts === 0 || this.selectedDebts === 2;
-        let archiviert = this.selectedDebts === 1 || this.selectedDebts === 2;
+      filterPersons() {
         let personsToReturn = [];
-        persons.forEach(person => {
-          let personNamePartOfSearch = this.partOfSearch(person.name)
-          if(offen && archiviert) {
-            if(person.openDebts.length !== 0 || person.archivedDebts.length !== 0) {
-              if(person.openDebts.length !== 0) {
-                for(let i = 0; i<person.openDebts.length; i++){
-                  if(this.partOfSearch(person.openDebts[i].description) || personNamePartOfSearch) {
-                    personsToReturn.push(person); 
-                    break;
-                  }
-                }
-              } else if(person.archivedDebts.length !== 0) {
-                for(let i = 0; i<person.archivedDebts.length; i++){
-                  if(this.partOfSearch(person.archivedDebts[i].description) || personNamePartOfSearch) {
-                    personsToReturn.push(person); 
-                    break;
-                  }
-                }
-              }
-            }
-          } else if(offen) {
-            if(person.openDebts.length !== 0) {
-              for(let i = 0; i<person.openDebts.length; i++){
-                if(this.partOfSearch(person.openDebts[i].description) || personNamePartOfSearch) {
-                  personsToReturn.push(person); 
-                  break;
-                }
-              }
-            }
-          } else if(archiviert) {
-            if(person.archivedDebts.length !== 0) {
-              for(let i = 0; i<person.archivedDebts.length; i++){
-                if(this.partOfSearch(person.archivedDebts[i].description) || personNamePartOfSearch) {
-                  personsToReturn.push(person); 
-                  break;
-                }
-              }
-            }
+        this.debts.forEach(debt => {
+          if((this.partOfSearch(debt.description) || this.partOfSearch(debt.person)) && !personsToReturn.includes(debt.person) && ((this.offen && this.archiviert) || (this.offen && !debt.archived) || (this.archiviert && debt.archived))) {
+            personsToReturn.push(debt.person)
           }
         })
         return personsToReturn
@@ -207,28 +192,35 @@
         else return false;
       },
       filterDebts(person) {
-        let offen = this.selectedDebts === 0 || this.selectedDebts === 2;
-        let archiviert = this.selectedDebts === 1 || this.selectedDebts === 2;
-        let debtsToReturn = []
-        if(offen && archiviert) {
-          debtsToReturn.push(person.openDebts)
-          debtsToReturn.push(person.archivedDebts)
-        } else if(offen) {
-          debtsToReturn.push(person.openDebts)
-        } else if(archiviert) {
-          debtsToReturn.push(person.archivedDebts)
-        }
-        return debtsToReturn[0];
+        let debtsToReturn = [];
+        debtsToReturn = this.debts.filter(debt => {
+          if((this.partOfSearch(debt.description) || this.partOfSearch(debt.person)) && debt.person === person && ((this.offen && this.archiviert) || (this.offen && !debt.archived) || (this.archiviert && debt.archived))) {
+            return debt
+          }
+        })
+        return debtsToReturn;
+       },
+      getAmountOfPerson(person) {
+        let initial = 0
+        let result = this.debts.reduce((accumulator, currentValue) => {
+          if(currentValue.person === person) {
+            if(!currentValue.isPositive) return accumulator - parseInt(currentValue.amount.$numberDecimal);
+            return accumulator + parseInt(currentValue.amount.$numberDecimal);
+          } else return accumulator
+        }, initial)
+        return result.toString();
       },
-      showFinishedDebt(person, debt) {
-        this.$store.dispatch("updateSelectedPerson", person.name);
-        this.$store.dispatch("updateIsGreen", debt.isGreen);
-        this.$store.dispatch("updateAmount", debt.amount);
+      showFinishedDebt(debt) {
+        this.$store.dispatch("updateSelectedDebtId", debt._id);
+        this.$store.dispatch("updateSelectedPerson", debt.person);
+        this.$store.dispatch("updateIsPositive", debt.isPositive);
+        this.$store.dispatch("updateAmount", debt.amount.$numberDecimal);
         this.$store.dispatch("updateDescription", debt.description);
         let debtDate = debt.date;
         this.$store.dispatch("updateSelectedDay", parseInt(debtDate.substr(8, 2)));
-        this.$store.dispatch("updateSelectedMonth", parseInt(debtDate.substr(5, 2)));
+        this.$store.dispatch("updateSelectedMonth", parseInt(debtDate.substr(5, 2))-1);
         this.$store.dispatch("updateSelectedYear", parseInt(debtDate.substr(0, 4)));
+        this.$store.dispatch("updateArchived", debt.archived);
         this.$router.push('finishedDebt');
       }
     }

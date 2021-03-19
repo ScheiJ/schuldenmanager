@@ -5,24 +5,33 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    debts: [],
     persons: [],
     selectedPerson: "",
+    selectedDebtId: 0,
     selectedPersonPageBack: 'Zurück',
     selectedPersonPageTitle: 'Neu',
     timeCloseButton: "Schließen",
-    isGreen: null,
+    isPositive: null,
     amount: "0.00",
     description: "",
     selectedDay: new Date().getDate(),
-    selectedMonth: new Date().getMonth(),
+    selectedMonth: new Date().getMonth()+1,
     selectedYear: new Date().getFullYear(),
+    archived: false,
   },
   mutations: {
+    updateDebts(state, value) {
+      state.debts = value;
+    },
     updatePersons(state, value) {
       state.persons = value;
     },
     updateSelectedPerson(state, value) {
       state.selectedPerson = value;
+    },
+    updateSelectedDebtId(state, value) {
+      state.selectedDebtId = value;
     },
     updateSelectedPersonPageBack(state, value) {
       state.selectedPersonPageBack = value;
@@ -33,8 +42,8 @@ export default new Vuex.Store({
     updateTimeCloseButton(state, value) {
       state.timeCloseButton = value;
     },
-    updateIsGreen(state, value) {
-      state.isGreen = value;
+    updateIsPositive(state, value) {
+      state.isPositive = value;
     },
     updateAmount(state, value) {
       state.amount = value;
@@ -51,13 +60,22 @@ export default new Vuex.Store({
     updateSelectedYear(state, value) {
       state.selectedYear = value;
     },
+    updateArchived(state, value) {
+      state.archived = value;
+    },
   },
   actions: {
+    updateDebts(context, value) {
+      context.commit("updateDebts", value);
+    },
     updatePersons(context, value) {
       context.commit("updatePersons", value);
     },
     updateSelectedPerson(context, value) {
       context.commit("updateSelectedPerson", value);
+    },
+    updateSelectedDebtId(context, value) {
+      context.commit("updateSelectedDebtId", value);
     },
     updateSelectedPersonPageBack(context, value) {
       context.commit("updateSelectedPersonPageBack", value);
@@ -68,8 +86,8 @@ export default new Vuex.Store({
     updateTimeCloseButton(context, value) {
       context.commit("updateTimeCloseButton", value);
     },
-    updateIsGreen(context, value) {
-      context.commit("updateIsGreen", value);
+    updateIsPositive(context, value) {
+      context.commit("updateIsPositive", value);
     },
     updateAmount(context, value) {
       context.commit("updateAmount", value);
@@ -85,6 +103,9 @@ export default new Vuex.Store({
     },
     updateSelectedYear(context, value) {
       context.commit("updateSelectedYear", value);
+    },
+    updateArchived(context, value) {
+      context.commit("updateArchived", value);
     },
   }
 })

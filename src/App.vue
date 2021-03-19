@@ -9,11 +9,11 @@
     >
       <!-- Linke Seite -->
       <v-app-bar-nav-icon v-if="$route.path == '/'" color="light-blue lighten-2"></v-app-bar-nav-icon>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" style="text-decoration: none; color: #4FC3F7" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/finishedDebt'" style="text-decoration: none; color: #4FC3F7" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>Zurück</router-link>
-      <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPerson }}</router-link>
-      <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="mt-8" @click="resetHeadingSelectPerson" style="text-decoration: none; color: #4FC3F7; cursor: pointer;">Abbrechen</v-toolbar-items>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>Zurück</router-link>
+      <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPerson }}</router-link>
+      <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
 
@@ -27,62 +27,54 @@
       <v-spacer></v-spacer>
 
       <!-- Rechte Seite -->
-      <router-link v-if="$route.path === '/'" style="text-decoration: none;" to="/selectPerson"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
-      <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="mt-8" style="text-decoration: none; color: #4FC3F7; cursor: pointer;" @click="save">Sichern</v-toolbar-items>
-      <router-link v-if="$route.path === '/finishedDebt'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt">Bearbeiten</router-link>
-      <router-link v-if="$route.path === '/time'" style="text-decoration: none; color: #4FC3F7" to="/modifyDebt">{{ timeCloseButton }}</router-link>
+      <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
+      <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="save">Sichern</v-toolbar-items>
+      <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/modifyDebt">Bearbeiten</router-link>
+      <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt">{{ timeCloseButton }}</router-link>
     </v-app-bar>
 
     <v-main style="background-color: #EEEEEE;">
       <v-container fluid>
-        <router-view/>
+        <router-view />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-  import PersonsService from "@/services/PersonsService";
+  import DebtsService from "@/services/DebtsService";
   import { mapState } from "vuex";
   export default {
     name: 'App',
     data: () => ({
-      
+      transitionName: null
     }),
+
     computed: {
-      ...mapState(["persons", "selectedPerson", "isGreen", "amount", "description", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
+      ...mapState(["debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
     },
     methods: {
       async save(){
-        // Überprüfen, ob es die Person schon gibt
-        let personInArray = this.persons.filter(person => {
-          return person.name === this.selectedPerson;
-        })
-        //Wenn es die Person noch nicht gibt, dann wird die Person neu erstellt, Debt hinzugefügt und gleich der Gesamtamount gesetzt
-        if(personInArray.length === 0){
-          await PersonsService.addPerson({
-            name: this.selectedPerson,
-            amount: this.isGreen===false ? -this.amount: this.amount,
-            openDebts: {
-              isGreen: this.isGreen===false ? false : true,
-              amount: this.amount,
-              description: this.description,
-              date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
-            },
-            archivedDebts: []
-          });
-        }
-        // Wenn es die Person schon gibt
-        else {
-          await PersonsService.addDebt({
+        // Überprüfen, ob Neu oder Bearbeiten anhand der ID
+        if(this.selectedDebtId) {
+          // ID gesetzt -> Update der ID
+          await DebtsService.updateDebt({
+            id: this.selectedDebtId,
             person: this.selectedPerson,
-            debt: {
-              isGreen: this.isGreen===false ? false : true,
-              amount: this.amount,
-              description: this.description,
-              date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
-            }
-          })
+            isPositive: this.isPositive===false ? false : true,
+            amount: this.amount,
+            description: this.description,
+            date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+          });
+        } else {
+          // Keine ID gesetzt -> Neuer Debt
+          await DebtsService.addDebt({
+            person: this.selectedPerson,
+            isPositive: this.isPositive===false ? false : true,
+            amount: this.amount,
+            description: this.description,
+            date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+          });
         }
         this.$router.push('/');
       },
@@ -106,6 +98,18 @@
 
   .app-title-font {
     font-family: 'Righteous', cursive;
+  }
+
+  .routerLink {
+    text-decoration: none; 
+    color: #4FC3F7 !important;
+  }
+
+  .navigationWithFunction {
+    text-decoration: none; 
+    color: #4FC3F7; 
+    cursor: pointer;
+    margin-top: 32px;
   }
 
 </style>

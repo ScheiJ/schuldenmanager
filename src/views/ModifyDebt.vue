@@ -2,7 +2,8 @@
   <div>
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
-            <div class="circle" @click="turnAround" v-bind:class="{ turnGreen: isGreen, turnRed: isGreen === false}"></div>
+            <div v-if="!archived" class="circle" @click="turnAround" v-bind:class="{ turnGreen: isPositive, turnRed: isPositive === false}"></div>
+            <v-icon v-if="archived">mdi-check</v-icon>
         </v-col>
         <v-col class="mt-3 ml-3 pb-0">
           <vuetify-money
@@ -95,7 +96,7 @@
       }
     },
     computed: {
-      ...mapState(["selectedPerson", "isGreen", "amount", "description", "selectedDay", "selectedMonth", "selectedYear"]),
+      ...mapState(["selectedPerson", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived"]),
       selectedDate: function () {
         var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
         var month = new Array();
@@ -135,8 +136,8 @@
     },
     methods: {
       turnAround() {
-          if(this.isGreen === null) this.$store.dispatch("updateIsGreen", false);
-          else this.$store.dispatch("updateIsGreen", !this.isGreen);
+          if(this.isPositive === null) this.$store.dispatch("updateIsPositive", false);
+          else this.$store.dispatch("updateIsPositive", !this.isPositive);
       },
     }
   }

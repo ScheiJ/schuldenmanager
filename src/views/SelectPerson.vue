@@ -23,9 +23,9 @@
       <v-col class="pa-0">
         <v-list class="pa-0 mx-0">
           <v-list-item-group>
-            <v-list-item @click="setAndSelectPerson(person.name)" v-for="person in personsToShow" v-bind:key="person._id" style="border-bottom: 0.5px solid black; background-color: #FFFFFF">
+            <v-list-item @click="setAndSelectPerson(person)" v-for="person in personsToShow" v-bind:key="person" style="border-bottom: 0.5px solid black; background-color: #FFFFFF">
               <v-list-item-content>
-                <v-list-item-title>{{ person.name }}</v-list-item-title>
+                <v-list-item-title>{{ person }}</v-list-item-title>
               </v-list-item-content>
               <v-list-item-icon>
                 <v-icon 
@@ -65,7 +65,7 @@
     methods: {
       filter() {
         this.personsToShow = this.persons.filter(person => {
-          return person.name.includes(this.person);
+          return person.includes(this.person);
         })
       },
       async selectPerson() {
