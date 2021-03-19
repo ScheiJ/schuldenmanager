@@ -35,7 +35,9 @@
 
     <v-main style="background-color: #EEEEEE;">
       <v-container fluid>
-        <router-view />
+        <transition :name="transitionName" mode="out-in">
+          <router-view />
+        </transition>
       </v-container>
     </v-main>
   </v-app>
@@ -52,6 +54,35 @@
 
     computed: {
       ...mapState(["debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
+    },
+    watch: {
+      '$route' (to, from) {
+        if (from.path === '/') {
+          this.transitionName = 'slide-left';
+        } else if (from.path === '/selectPerson') {
+          if (to.path === '/' || (to.path === '/modifyDebt' && this.selectedPersonPageTitle === 'Bearbeiten')) {
+            this.transitionName = 'slide-right';
+          } else if (to.path === '/modifyDebt') {
+            this.transitionName = 'slide-left';
+          }
+        } else if (from.path === '/modifyDebt') {
+          if (to.path === '/selectPerson' || to.path === '/time') {
+            this.transitionName = 'slide-left';
+          } else if (to.path === '/') {
+            this.transitionName = 'slide-right';
+          } else if (to.path === '/finishedDebt') {
+            this.transitionName = null;
+          }
+        } else if (from.path === '/time') {
+          this.transitionName = 'slide-right';
+        } else if (from.path === '/finishedDebt') {
+          if (to.path === '/') {
+            this.transitionName = 'slide-right';
+          } else if (to.path === '/modifyDebt') {
+            this.transitionName = null;
+          }
+        }
+      }
     },
     methods: {
       async save(){
@@ -76,7 +107,7 @@
             date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
           });
         }
-        this.$router.push('/');
+        this.selectedDebtId === 0 ? this.$router.push('/') : this.$router.push('/finishedDebt');
       },
       updateHeadingSelectPerson() {
         this.$store.dispatch('updateSelectedPersonPageTitle', 'Bearbeiten');
@@ -87,7 +118,7 @@
         this.$store.dispatch('updateSelectedPersonPageTitle', 'Neu');
         this.$store.dispatch('updateSelectedPersonPageBack', "Zurück");
         this.$store.dispatch('updateSelectedPerson', "");
-        this.$router.push('/');
+        this.selectedDebtId === 0 ? this.$router.push('/') : this.$router.push('/finishedDebt');
       }
     }
   };
@@ -110,6 +141,22 @@
     color: #4FC3F7; 
     cursor: pointer;
     margin-top: 32px;
+  }
+
+  /*slide transition*/
+
+  .slide-left-leave-active,
+  .slide-right-leave-active
+  {
+    transition: transform 0.3s ease-out;
+  }
+  .slide-left-enter,
+  .slide-right-leave-to {
+    transform: translateX(100%);
+  }
+  .slide-left-leave-to,
+  .slide-right-enter {
+    transform: translateX(-100%);
   }
 
 </style>

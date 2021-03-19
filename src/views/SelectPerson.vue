@@ -6,7 +6,6 @@
         <v-text-field
           v-model="person"
           placeholder="Person"
-          autofocus
           dark
           dense
           solo
