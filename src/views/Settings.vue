@@ -2,9 +2,9 @@
     <v-row class="mb-14">
       <v-col class="pa-0">
         <v-list class="pa-0 mx-0">
-            <v-list-item-group style="background-color: #EEEEEE">
+            <v-list-item-group class="backgroundGrey">
                 <v-subheader class="pt-10 pb-4">VERHALTEN</v-subheader>
-                <v-list-item @click="toggleSettings('showTotalAmount')" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
+                <v-list-item @click="toggleSettings('showTotalAmount')" class="backgroundWhite borderBottom">
                     <v-list-item-content>
                         <v-list-item-title>Gesamtsumme anzeigen</v-list-item-title>
                     </v-list-item-content>
@@ -16,7 +16,7 @@
                         >mdi-check</v-icon>
                     </v-list-item-icon>
                 </v-list-item>
-                 <v-list-item @click="toggleSettings('showAllFirst')" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
+                 <v-list-item @click="toggleSettings('showAllFirst')" class="backgroundWhite borderBottom">
                     <v-list-item-content>
                         <v-list-item-title>Immer zu "Alle" öffnen</v-list-item-title>
                     </v-list-item-content>
@@ -28,7 +28,7 @@
                         >mdi-check</v-icon>
                     </v-list-item-icon>
                 </v-list-item>
-                 <v-list-item @click="toggleSettings('easyList')" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
+                 <v-list-item @click="toggleSettings('easyList')" class="backgroundWhite borderBottom">
                     <v-list-item-content>
                         <v-list-item-title>Einfache Listenstruktur</v-list-item-title>
                     </v-list-item-content>
@@ -76,3 +76,9 @@
     }
   }
 </script>
+
+<style scoped>
+.borderBottom {
+  border-bottom: 3px solid #EEEEEE;
+}
+</style>

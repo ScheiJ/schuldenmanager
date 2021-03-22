@@ -6,12 +6,13 @@
       dark
       absolute
       flat
+      style="position: fixed"
     >
       <!-- Linke Seite -->
       <router-link class="routerLink" to="/settings"><v-app-bar-nav-icon v-if="$route.path === '/'" color="light-blue lighten-2"></v-app-bar-nav-icon></router-link>
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>Zurück</router-link>
+      <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>Zurück</router-link>
       <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPerson }}</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
@@ -22,20 +23,21 @@
       <v-toolbar-title v-if="$route.path === '/settings'">Einstellungen</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/selectPerson'">{{ selectedPersonPageTitle }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/modifyDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPerson }}</v-toolbar-title>
-      <v-toolbar-title v-if="$route.path === '/finishedDebt'">{{ selectedPerson }}</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'">{{ selectedPerson }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/time'" style="color: white; cursor: pointer;">Datum</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <!-- Rechte Seite -->
       <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
+      <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
       <router-link v-if="$route.path === '/settings'" class="routerLink" to="/">Fertig</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="save">Sichern</v-toolbar-items>
       <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/modifyDebt">Bearbeiten</router-link>
       <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt">{{ timeCloseButton }}</router-link>
     </v-app-bar>
 
-    <v-main style="background-color: #EEEEEE;">
+    <v-main class="backgroundGrey">
       <v-container fluid>
         <transition :name="transitionName" mode="out-in">
           <router-view />
@@ -74,16 +76,18 @@
         else if (from.path === '/finishedDebt') {
           if (to.path === '/') this.transitionName = 'slide-right';
           else if (to.path === '/modifyDebt') this.transitionName = null;
+        } else if (from.path === '/debtsOfOnePerson') {
+          if (to.path === '/') this.transitionName = 'slide-right';
         }
       }
     },
-    beforeMount() {
-      window.addEventListener("beforeunload", event => {
-        event.preventDefault()
-        // Chrome requires returnValue to be set.
-        event.returnValue = ""
-      })
-    },
+    // beforeMount() {
+    //   window.addEventListener("beforeunload", event => {
+    //     event.preventDefault()
+    //     // Chrome requires returnValue to be set.
+    //     event.returnValue = ""
+    //   })
+    // },
     methods: {
       async save(){
         // Überprüfen, ob Neu oder Bearbeiten anhand der ID
@@ -159,4 +163,43 @@
     transform: translateX(-100%);
   }
 
+  /* Global Styles */
+
+  .backgroundWhite {
+    background-color: #FFFFFF;
+  }
+
+  .backgroundGrey {
+    background-color: #EEEEEE;
+  }
+
+  .circleBig {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #8BC34A;
+    border: 5px solid #8BC34A;
+    margin: auto;
+  } 
+
+  .circleSmall {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #8BC34A;
+    border: 5px solid #8BC34A;
+    margin: auto;
+  }
+
+  .red {
+    background: #C62828; border-color: #C62828;
+  } 
+
+  .green {
+    background: #8BC34A; border-color: #8BC34A;
+  }
+
+  .blue {
+    color: #4FC3F7
+  }
 </style>

@@ -10,6 +10,8 @@ export default new Vuex.Store({
     easyList: false,
     debts: [],
     persons: [],
+    searchInput: "",
+    selectedDebt: 0,
     selectedPerson: "",
     selectedDebtId: 0,
     selectedPersonPageBack: 'Zurück',
@@ -38,6 +40,12 @@ export default new Vuex.Store({
     },
     updatePersons(state, value) {
       state.persons = value;
+    },
+    updateSearchInput(state, value) {
+      state.searchInput = value;
+    },
+    updateSelectedDebt(state, value) {
+      state.selectedDebt = value;
     },
     updateSelectedPerson(state, value) {
       state.selectedPerson = value;
@@ -91,6 +99,12 @@ export default new Vuex.Store({
     },
     updatePersons(context, value) {
       context.commit("updatePersons", value);
+    },
+    updateSearchInput(context, value) {
+      context.commit("updateSearchInput", value);
+    },
+    updateSelectedDebt(context, value) {
+      context.commit("updateSelectedDebt", value);
     },
     updateSelectedPerson(context, value) {
       context.commit("updateSelectedPerson", value);

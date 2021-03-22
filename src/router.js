@@ -37,6 +37,11 @@ export default new Router({
       path: '/finishedDebt',
       name: 'FinishedDebt',
       component: () => import('./views/FinishedDebt.vue')
+    },
+    {
+      path: '/debtsOfOnePerson',
+      name: 'DebtsOfOnePerson',
+      component: () => import('./views/DebtsOfOnePerson.vue')
     }
   ]
 })

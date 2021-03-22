@@ -2,7 +2,7 @@
   <div>
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
-            <div v-if="!archived" class="circle" v-bind:class="{ green: isPositive, red: isPositive === false}"></div>
+            <div v-if="!archived" class="circleBig" v-bind:class="{ green: isPositive, red: isPositive === false}"></div>
             <v-icon v-if="archived">mdi-check</v-icon>
         </v-col>
         <v-col class="mt-4 ml-3 pb-0">
@@ -18,7 +18,7 @@
             readonly
             background-color="#EEEEEE"
             v-model="selectedDate"
-            class="pl-1"
+            class="pl-1 backgroundGrey"
             ></v-text-field>
         </v-col>
     </v-row>
@@ -33,6 +33,7 @@
             background-color="#EEEEEE"
             solo
             flat
+            readonly
             no-resize
             ></v-textarea>
         </v-col>
@@ -45,7 +46,7 @@
           <v-list-item-group style="position: fixed; bottom: 0; width: 100%">
             <v-list-item style="background-color: #37474F">
                 <v-list-item-icon>
-                  <v-icon style="color: #4FC3F7">mdi-trash-can-outline</v-icon>
+                  <v-icon color="#4FC3F7">mdi-trash-can-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content @click="overlay = !overlay">
                     <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
@@ -147,22 +148,5 @@ export default {
 <style scoped>
     .centered-input >>> input {
         text-align: center !important;
-    }
-    
-    .circle {
-        height: 40px;
-        width: 40px;
-        border-radius: 50%;
-        background-color: #8BC34A;
-        border: 5px solid #8BC34A;
-        margin: auto;
-    } 
-
-    .green {
-        background: #8BC34A; border-color: #8BC34A;
-    }
-
-    .red {
-        background: #C62828; border-color: #C62828;
     }
 </style>>
