@@ -5,6 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    showTotalAmount: false,
+    showAllFirst: false,
+    easyList: false,
     debts: [],
     persons: [],
     selectedPerson: "",
@@ -21,6 +24,15 @@ export default new Vuex.Store({
     archived: false,
   },
   mutations: {
+    updateShowTotalAmount(state, value) {
+      state.showTotalAmount = value;
+    },
+    updateShowAllFirst(state, value) {
+      state.showAllFirst = value;
+    },
+    updateEasyList(state, value) {
+      state.easyList = value;
+    },
     updateDebts(state, value) {
       state.debts = value;
     },
@@ -65,6 +77,15 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    updateShowTotalAmount(context, value) {
+      context.commit("updateShowTotalAmount", value);
+    },
+    updateShowAllFirst(context, value) {
+      context.commit("updateShowAllFirst", value);
+    },
+    updateEasyList(context, value) {
+      context.commit("updateEasyList", value);
+    },
     updateDebts(context, value) {
       context.commit("updateDebts", value);
     },

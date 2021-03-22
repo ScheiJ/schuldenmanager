@@ -14,6 +14,11 @@ export default new Router({
       component: Home
     },
     {
+      path: '/settings',
+      name: 'Settings',
+      component: () => import('./views/Settings.vue')
+    },
+    {
       path: '/selectPerson',
       name: 'SelectPerson',
       component: () => import('./views/SelectPerson.vue')

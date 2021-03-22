@@ -100,7 +100,7 @@
             </v-list-item-icon>
             <v-list-item-icon v-if="total < 0">
               {{ total.toString().substring(1) }},00 €
-              <v-icon class="circle ml-3" v-bind:class="{ red: total < 0 }"></v-icon>
+              <v-icon class="circle ml-3 red"></v-icon>
             </v-list-item-icon>
           </v-list-item>
         </v-list>
@@ -112,6 +112,7 @@
 <script>
   import { mapState } from "vuex";
   import DebtsService from "@/services/DebtsService";
+  import SettingsService from "@/services/SettingsService";
   export default {
     name: 'Home',
     components: {
@@ -122,17 +123,14 @@
       selectedDebts: 0,
     }),
     computed: {
-      ...mapState(["persons", "debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived"]),
+      ...mapState(["persons", "debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived", "showTotalAmount", "showAllFirst", "easyList"]),
       total: function () {
         let initial = 0;
-        return this.persons.reduce((accumulator, currentValue) => {
-          let arrayCurrentValue = this.filterDebts(currentValue)
-          let ini = 0;
-          let amountCurrentValue = arrayCurrentValue.reduce((acc, current) => {
-            return acc + parseInt(current.amount.$numberDecimal);
-          }, ini)
-          return accumulator + amountCurrentValue;
+        let vari = this.persons.reduce((accumulator, currentValue) => {
+          return accumulator + parseInt(this.getAmountOfPerson(currentValue));
         },initial)
+        console.log(vari)
+        return vari
       },
       offen: function() {
         return this.selectedDebts === 0 || this.selectedDebts === 2;
@@ -144,6 +142,7 @@
     mounted: function() {
       this.fetchAllDebts();
       this.resetStates();
+      this.fetchSettings();
     },
     methods: {
       async fetchAllDebts() {
@@ -169,6 +168,13 @@
         this.$store.dispatch('updateSelectedPerson', "");
         this.$store.dispatch('updateArchived', false);
       },
+      async fetchSettings() {
+        let settings = await SettingsService.fetchSettings();
+        settings = settings.data.settings;
+        this.$store.dispatch('updateShowTotalAmount', settings.showTotalAmount);
+        this.$store.dispatch('updateShowAllFirst', settings.showAllFirst);
+        this.$store.dispatch('updateEasyList', settings.easyList);
+      },
       getNormalFormat(date){
         let newDate = new Date(date)
         let year = newDate.getFullYear();
@@ -192,23 +198,19 @@
         else return false;
       },
       filterDebts(person) {
-        let debtsToReturn = [];
-        debtsToReturn = this.debts.filter(debt => {
+        return this.debts.filter(debt => {
           if((this.partOfSearch(debt.description) || this.partOfSearch(debt.person)) && debt.person === person && ((this.offen && this.archiviert) || (this.offen && !debt.archived) || (this.archiviert && debt.archived))) {
-            return debt
+            return debt;
           }
         })
-        return debtsToReturn;
        },
       getAmountOfPerson(person) {
         let initial = 0
-        let result = this.debts.reduce((accumulator, currentValue) => {
-          if(currentValue.person === person) {
-            if(!currentValue.isPositive) return accumulator - parseInt(currentValue.amount.$numberDecimal);
-            return accumulator + parseInt(currentValue.amount.$numberDecimal);
-          } else return accumulator
-        }, initial)
-        return result.toString();
+        let debtsOfPerson = this.filterDebts(person);
+        return debtsOfPerson.reduce((accumulator, currentValue) => {
+          if(!currentValue.isPositive) return accumulator - parseInt(currentValue.amount.$numberDecimal);
+          return accumulator + parseInt(currentValue.amount.$numberDecimal);
+        }, initial).toString();
       },
       showFinishedDebt(debt) {
         this.$store.dispatch("updateSelectedDebtId", debt._id);
