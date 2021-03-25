@@ -13,9 +13,6 @@
 import { mapState } from "vuex";
 export default {
     name: 'Time',
-    components: {
-        //HelloWorld,
-    },
     data () {
       return {
         picker: new Date().toISOString().substr(0, 10)

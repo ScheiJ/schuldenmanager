@@ -29,7 +29,6 @@ workbox.routing.registerRoute(
             })
         ],
         method: "GET",
-        cacheableResponse: { statuses: [0, 200] }
     })
 );
 
@@ -45,6 +44,8 @@ workbox.routing.registerRoute(
         method: "GET"
     }),
 );
+
+// Background Sync
 const bgSyncPlugin = new workbox.backgroundSync.Plugin('myQueue', {
     maxRetentionTime: 24 * 60, // Retry for max of 24 Hours
 });

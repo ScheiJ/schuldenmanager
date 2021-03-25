@@ -1,13 +1,13 @@
 import { mapState } from "vuex";
 export default {
     computed: {
-        ...mapState(["persons", "searchInput", "selectedDebt", "debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived", "showTotalAmount", "showAllFirst", "easyList"]),
+        ...mapState(["searchInput", "selectedDebt", "debts", "selectedPerson"]),
         offen: function() {
             return this.selectedDebt === 0 || this.selectedDebt === 2;
         },
         archiviert: function() {
             return this.selectedDebt === 1 || this.selectedDebt === 2;
-        }
+        }     
     },
     methods: {
         getAmountOfPerson(person) {
@@ -18,7 +18,7 @@ export default {
                 if(!currentValue.isPositive) return accumulator - parseInt(currentValue.amount.$numberDecimal);
                 return accumulator + parseInt(currentValue.amount.$numberDecimal);
                 } else return accumulator;
-            }, initial)
+            }, initial);
             if(debtsOfPerson) return debtsOfPerson.toString();
             else return "0";
         },
@@ -26,22 +26,23 @@ export default {
             if(this.$route.path === "/debtsOfOnePerson") return [this.selectedPerson];
             let personsToReturn = [];
             this.debts.forEach(debt => {
-              if((this.partOfSearch(debt.description) || this.partOfSearch(debt.person)) && !personsToReturn.includes(debt.person) && ((this.offen && this.archiviert) || (this.offen && !debt.archived) || (this.archiviert && debt.archived))) {
+              if(!personsToReturn.includes(debt.person) && this.fullfillCriterias(debt)) {
                 personsToReturn.push(debt.person);
               }
             })      
-            return personsToReturn
+            return personsToReturn;
         },
         filterDebts(person) {
             return this.debts.filter(debt => {
-              if((this.partOfSearch(debt.description) || this.partOfSearch(debt.person)) && debt.person === person && ((this.offen && this.archiviert) || (this.offen && !debt.archived) || (this.archiviert && debt.archived))) {
-                return debt;
-              }
+              return (debt.person === person && this.fullfillCriterias(debt));
             })
         },
         partOfSearch(word) {
             if (word.toLowerCase().includes(this.searchInput.toLowerCase())) return true;
             else return false;
         },
+        fullfillCriterias(debt) {
+            return (this.partOfSearch(debt.description) || this.partOfSearch(debt.person)) && ((this.offen && this.archiviert) || (this.offen && !debt.archived) || (this.archiviert && debt.archived));
+        }
     }
   };

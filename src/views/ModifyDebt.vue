@@ -43,6 +43,7 @@
             id="textFieldDescription"
             label="Keine Beschreibung"
             background-color="#EEEEEE"
+            rows="7"
             solo
             flat
             no-resize
@@ -70,11 +71,10 @@
   import { mdiMapMarkerRadius } from '@mdi/js';
   import { mdiCamera } from '@mdi/js';
   import { mapState } from "vuex";
+  import getFullDateMixin from "../mixins/getFullDateMixin";
   export default {
     name: 'ModifyDebt',
-    components: {
-      //HelloWorld,
-    },
+    mixins: [getFullDateMixin],
     data: () => {
       return {
         checkIcon: mdiCheck,
@@ -101,24 +101,7 @@
       }
     },
     computed: {
-      ...mapState(["selectedPerson", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived"]),
-      selectedDate: function () {
-        var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
-        var month = new Array();
-        month[0] = "Jan.";
-        month[1] = "Feb.";
-        month[2] = "März";
-        month[3] = "Apr.";
-        month[4] = "Mai";
-        month[5] = "Juni";
-        month[6] = "Juli";
-        month[7] = "Aug.";
-        month[8] = "Sept.";
-        month[9] = "Okt.";
-        month[10] = "Nov.";
-        month[11] = "Dez.";
-        return this.selectedDay + ". " + month[d.getMonth()];
-      },
+      ...mapState(["isPositive", "amount", "description", "archived"]),
       amount: {
         get() {
           return this.$store.state.amount;
@@ -135,9 +118,6 @@
           this.$store.dispatch('updateDescription', value);
         }
       },
-    },
-    mounted: function () {
-        document.getElementById("textFieldDescription").setAttribute("rows", window.innerHeight/45)
     },
     methods: {
       turnAround() {

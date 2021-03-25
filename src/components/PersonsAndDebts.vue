@@ -44,7 +44,7 @@ export default {
   },
   methods: {
       getNormalFormat(date){
-        let newDate = new Date(date)
+        let newDate = new Date(date);
         let year = newDate.getFullYear();
         let month = newDate.getMonth()+1;
         if (month.toString().length === 1) month = "0" + month;

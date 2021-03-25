@@ -13,8 +13,7 @@
           background-color="blue-grey darken-3"
           class="mt-0 pt-5"
           style="background-color: #37474F;"
-          @keyup.enter="selectPerson"
-          @keyup="filter"
+          @keyup.enter="selectPerson(person)"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -22,7 +21,7 @@
       <v-col class="pa-0">
         <v-list class="pa-0 mx-0">
           <v-list-item-group>
-            <v-list-item @click="setAndSelectPerson(person)" v-for="person in personsToShow" v-bind:key="person" style="border-bottom: 0.5px solid black; background-color: #FFFFFF">
+            <v-list-item @click="selectPerson(person)" v-for="person in filterPersons" v-bind:key="person" style="border-bottom: 0.5px solid black; background-color: #FFFFFF">
               <v-list-item-content>
                 <v-list-item-title>{{ person }}</v-list-item-title>
               </v-list-item-content>
@@ -45,10 +44,6 @@
   import { mdiGreaterThan } from '@mdi/js';
   export default {
     name: 'SelectPerson',
-
-    components: {
-      //HelloWorld,
-    },
     data: () => {
       return {
         greaterThanIcon: mdiGreaterThan,
@@ -58,27 +53,22 @@
     },
     mounted: function () {
       this.person = this.selectedPerson;
-      this.filter();
     },
     computed: {
-      ...mapState(["persons", "selectedPerson"])
-    },
-    methods: {
-      filter() {
-        this.personsToShow = this.persons.filter(person => {
+      ...mapState(["persons", "selectedPerson"]),
+      filterPersons: function() {
+        return this.persons.filter(person => {
           return person.includes(this.person);
         })
-      },
-      async selectPerson() {
-        if(this.person) {
-          if(this.selectedPerson !== this.person) this.$store.dispatch("updateSelectedPerson", this.person);
-          this.$router.push('modifyDebt');
+      }
+    },
+    methods: {
+      async selectPerson(person) {
+        if(person) {
+          if(this.selectedPerson !== person) this.$store.dispatch("updateSelectedPerson", person);
+          this.$router.push('/modifyDebt');
         }
       },
-      setAndSelectPerson(name) {
-        this.person = name;
-        this.selectPerson();
-      }
     }
   }
 </script>

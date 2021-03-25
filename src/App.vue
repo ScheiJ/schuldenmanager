@@ -62,7 +62,7 @@
     }),
 
     computed: {
-      ...mapState(["debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
+      ...mapState(["debts", "selectedPerson", "selectedDebt", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear", "settings"])
     },
     created() {
       if (this.$workbox) {
@@ -73,13 +73,6 @@
       this.fetchAllDebts();
       this.fetchSettings();
     },
-    // beforeMount() {
-    //   window.addEventListener("beforeunload", event => {
-    //     event.preventDefault()
-    //     // Chrome requires returnValue to be set.
-    //     event.returnValue = ""
-    //   })
-    // },
     methods: {
       async accept() {
         this.showUpdateUI = false;
@@ -103,10 +96,7 @@
       async fetchSettings() {
         let settings = await SettingsService.fetchSettings();
         settings = settings.data.settings;
-        this.$store.dispatch('updateShowTotalAmount', settings.showTotalAmount);
-        this.$store.dispatch('updateShowAllFirst', settings.showAllFirst);
-        this.$store.dispatch('updateEasyList', settings.easyList);
-        if(this.showAllFirst) this.$store.dispatch("updateSelectedDebt", 2);
+        this.$store.dispatch('updateSettings', settings);
       },
       async save(){
         let newDebt = {

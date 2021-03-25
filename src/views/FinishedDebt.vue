@@ -35,6 +35,7 @@
             flat
             readonly
             no-resize
+            rows="7"
             ></v-textarea>
         </v-col>
         <v-col cols="1" class="ml-3 mr-0 pt-0">
@@ -97,6 +98,8 @@ import DebtsService from "@/services/DebtsService";
 import { mdiCheck } from '@mdi/js';
 import { mdiClose } from '@mdi/js';
 import { mapState } from "vuex";
+import modifyLocalDebtsMixin from "../mixins/modifyLocalDebtsMixin";
+import getFullDateMixin from "../mixins/getFullDateMixin";
 export default {
     name: 'FinishedDebt',
     data () {
@@ -108,39 +111,24 @@ export default {
         overlay: false,
       }
     },
+    mixins: [modifyLocalDebtsMixin, getFullDateMixin],
     computed: {
-      ...mapState(["selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived"]),
-      selectedDate: function () {
-        var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
-        var month = new Array();
-        month[0] = "Jan.";
-        month[1] = "Feb.";
-        month[2] = "März";
-        month[3] = "Apr.";
-        month[4] = "Mai";
-        month[5] = "Juni";
-        month[6] = "Juli";
-        month[7] = "Aug.";
-        month[8] = "Sept.";
-        month[9] = "Okt.";
-        month[10] = "Nov.";
-        month[11] = "Dez.";
-        return this.selectedDay + ". " + month[d.getMonth()];
-      },
-    },
-    mounted: function () {
-        document.getElementById("textFieldDescription").setAttribute("rows", window.innerHeight/60)
+      ...mapState(["debts", "selectedDebtId", "isPositive", "amount", "description", "archived"])
     },
     methods: {
         async toggleArchiveDebt() {
             await DebtsService.toggleArchiveDebt({
-                id: this.selectedDebtId,
-            });    
-            this.$router.push("/")
+              id: this.selectedDebtId,
+            }); 
+            let indexToToggleArchived = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
+            this.$store.dispatch("toggleArchivedInDebts", indexToToggleArchived);
+            this.$router.push("/");
         },
         async deleteDebt() {
-            await DebtsService.deleteDebt(this.selectedDebtId);    
-            this.$router.push("/")
+            await DebtsService.deleteDebt(this.selectedDebtId);  
+            let indexToDelete = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
+            this.$store.dispatch("deleteDebt", indexToDelete);
+            this.$router.push("/");
         }
     }
 }

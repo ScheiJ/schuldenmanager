@@ -1,4 +1,4 @@
-import Api from "@/services/Api";
+import { Api, responseNetworkErrorDuringOffline } from "@/services/Api";
 
 export default {
   fetchSettings() {
@@ -6,6 +6,6 @@ export default {
   },
 
   setSettings(params) {
-    return Api().post("settings", params);
+    return Api().put("setting/" + params._id, params).catch(err => responseNetworkErrorDuringOffline(err));
   },
 };

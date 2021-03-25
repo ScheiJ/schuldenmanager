@@ -5,9 +5,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    showTotalAmount: false,
-    showAllFirst: false,
-    easyList: false,
+    settings: [
+      {
+        name: "showAllFirst",
+        checked: false,
+        prompt: ""
+      },
+      {
+        name: "showTotalAmount",
+        checked: false,
+        prompt: ""
+      },
+      {
+        name: "easyList",
+        checked: false,
+        prompt: ""
+      },
+    ],
     debts: [],
     persons: [],
     searchInput: "",
@@ -26,14 +40,8 @@ export default new Vuex.Store({
     archived: false,
   },
   mutations: {
-    updateShowTotalAmount(state, value) {
-      state.showTotalAmount = value;
-    },
-    updateShowAllFirst(state, value) {
-      state.showAllFirst = value;
-    },
-    updateEasyList(state, value) {
-      state.easyList = value;
+    updateSettings(state, value) {
+      state.settings = value;
     },
     updateDebts(state, value) {
       state.debts = value;
@@ -83,16 +91,19 @@ export default new Vuex.Store({
     updateArchived(state, value) {
       state.archived = value;
     },
+    toggleArchivedInDebts(state, value) {
+      state.debts[value].archived = !state.debts[value].archive;
+    },
+    deleteDebt(state, value) {
+      state.debts.splice(value, 1);
+    },
+    toggleSetting(state, value) {
+      state.settings[value].checked = !state.settings[value].checked;
+    }
   },
   actions: {
-    updateShowTotalAmount(context, value) {
-      context.commit("updateShowTotalAmount", value);
-    },
-    updateShowAllFirst(context, value) {
-      context.commit("updateShowAllFirst", value);
-    },
-    updateEasyList(context, value) {
-      context.commit("updateEasyList", value);
+    updateSettings(context, value) {
+      context.commit("updateSettings", value);
     },
     updateDebts(context, value) {
       context.commit("updateDebts", value);
@@ -142,5 +153,14 @@ export default new Vuex.Store({
     updateArchived(context, value) {
       context.commit("updateArchived", value);
     },
+    toggleArchivedInDebts(context, value) {
+      context.commit("toggleArchivedInDebts", value);
+    },
+    deleteDebt(context, value) {
+      context.commit("deleteDebt", value);
+    },
+    toggleSetting(context, value) {
+      context.commit("toggleSetting", value);
+    }
   }
 })

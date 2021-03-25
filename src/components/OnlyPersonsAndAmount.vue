@@ -65,7 +65,7 @@ export default {
     },
     showDebtsOfOnePerson(person) {
         this.$store.dispatch("updateSelectedPerson", person.name);
-        this.$router.push('/debtsOfOnePerson')
+        this.$router.push('/debtsOfOnePerson');
     }
   }
 };

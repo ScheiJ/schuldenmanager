@@ -1,4 +1,4 @@
-import Api from "@/services/Api";
+import { Api, responseNetworkErrorDuringOffline } from "@/services/Api";
 
 export default {
   fetchAllDebts() {
@@ -6,30 +6,20 @@ export default {
   },
 
   addDebt(params) {
-    return Api().post("debt", params).catch(err => {
-      if(err.response) {
-        return "Error";
-      } else if (err.request) {
-        return "Network Error";
-      }
-    });
+    return Api().post("debt", params).catch(err => responseNetworkErrorDuringOffline(err));
   },
 
   updateDebt(params) {
-    return Api().put("debt/" + params._id, params).catch(err => {
-      if(err.response) {
-        return "Error";
-      } else if (err.request) {
-        return "Network Error";
-      }
-    });
+    return Api().put("debt/" + params._id, params).catch(err => responseNetworkErrorDuringOffline(err));
   },
 
   toggleArchiveDebt(params) {
-    return Api().put("toggle-archive-debt/" + params.id, params);
+    return Api().put("toggle-archive-debt/" + params.id, params).catch(err => responseNetworkErrorDuringOffline(err));
   },
 
   deleteDebt(id) {
-    return Api().delete("debt/" + id);
+    return Api().delete("debt/" + id).catch(err => responseNetworkErrorDuringOffline(err));
   },
+
+  
 };
