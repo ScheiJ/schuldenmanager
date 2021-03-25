@@ -83,8 +83,6 @@
 
 <script>
   import { mapState } from "vuex";
-  import DebtsService from "@/services/DebtsService";
-  import SettingsService from "@/services/SettingsService";
   import PersonsAndDebts from "@/components/PersonsAndDebts.vue";
   import OnlyPersonsAndAmount from "@/components/OnlyPersonsAndAmount.vue";
   import personsDebtsMixin from "../mixins/personsDebtsMixin";
@@ -105,7 +103,7 @@
           return this.$store.state.searchInput;
         },
         set(value) {
-          this.$store.dispatch('updateSearchInput', value);
+          this.$store.commit('updateSearchInput', value);
         }
       },
       selectedDebt: {
@@ -113,7 +111,7 @@
           return this.$store.state.selectedDebt;
         },
         set(value) {
-          this.$store.dispatch('updateSelectedDebt', value);
+          this.$store.commit('updateSelectedDebt', value);
         }
       },
       total: function () {
@@ -124,25 +122,11 @@
       },
     },
     mounted: function() {
-      this.fetchAllDebts();
       this.resetStates();
-      this.fetchSettings();
       //let scrollTo = document.getElementById('contentDebts');
       //scrollTo.scrollIntoView({behavior: 'smooth'});
     },
     methods: {
-      async fetchAllDebts() {
-        let debts = await DebtsService.fetchAllDebts();
-        debts = debts.data.debts;
-        this.$store.dispatch("updateDebts", debts);
-        let persons = [];
-        debts.forEach(debt => {
-          if(!persons.includes(debt.person)) {
-            persons.push(debt.person)
-          }
-        })
-        this.$store.dispatch("updatePersons", persons);
-      },
       resetStates() {
         this.$store.dispatch('updateSelectedDebtId', 0);
         this.$store.dispatch("updateSelectedDebt", 0);
@@ -154,14 +138,6 @@
         this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
         this.$store.dispatch('updateSelectedPerson', "");
         this.$store.dispatch('updateArchived', false);
-      },
-      async fetchSettings() {
-        let settings = await SettingsService.fetchSettings();
-        settings = settings.data.settings;
-        this.$store.dispatch('updateShowTotalAmount', settings.showTotalAmount);
-        this.$store.dispatch('updateShowAllFirst', settings.showAllFirst);
-        this.$store.dispatch('updateEasyList', settings.easyList);
-        if(this.showAllFirst) this.$store.dispatch("updateSelectedDebt", 2);
       },
     }
   }

@@ -30,7 +30,7 @@
                 <v-icon 
                 small
                 color="#BDBDBD"
-                >mdi-greater-than</v-icon>
+                >{{ greaterThanIcon }}</v-icon>
               </v-list-item-icon>
             </v-list-item>
           </v-list-item-group>
@@ -42,6 +42,7 @@
 
 <script>
   import { mapState } from "vuex";
+  import { mdiGreaterThan } from '@mdi/js';
   export default {
     name: 'SelectPerson',
 
@@ -50,6 +51,7 @@
     },
     data: () => {
       return {
+        greaterThanIcon: mdiGreaterThan,
         person: "",
         personsToShow: []
       }

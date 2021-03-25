@@ -1,11 +1,12 @@
 {
-  "name": "schuldenmanager",
-  "short_name": "schuldenmanager",
+  "name": "Schuldenmanager",
+  "short_name": "Schuldenmanager",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./img/icons/android-chrome-512x512.png",
@@ -13,8 +14,8 @@
       "type": "image/png"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "background_color": "#37474F",
+  "theme_color": "#37474F"
 }

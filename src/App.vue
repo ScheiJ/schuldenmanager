@@ -10,10 +10,10 @@
     >
       <!-- Linke Seite -->
       <router-link class="routerLink" to="/settings"><v-app-bar-nav-icon v-if="$route.path === '/'" color="light-blue lighten-2"></v-app-bar-nav-icon></router-link>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>Zurück</router-link>
-      <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-less-than</v-icon>{{ selectedPerson }}</router-link>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>Zurück</router-link>
+      <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>{{ selectedPerson }}</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
@@ -29,8 +29,8 @@
       <v-spacer></v-spacer>
 
       <!-- Rechte Seite -->
-      <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
-      <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">mdi-plus</v-icon></router-link>
+      <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">{{ plusIcon }}</v-icon></router-link>
+      <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ plusIcon }}</v-icon></router-link>
       <router-link v-if="$route.path === '/settings'" class="routerLink" to="/">Fertig</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="save">Sichern</v-toolbar-items>
       <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/modifyDebt">Bearbeiten</router-link>
@@ -48,38 +48,30 @@
 </template>
 
 <script>
+  import { mdiPlus } from '@mdi/js'
+  import { mdiLessThan } from '@mdi/js';
   import DebtsService from "@/services/DebtsService";
+  import SettingsService from "@/services/SettingsService";
   import { mapState } from "vuex";
   export default {
     name: 'App',
     data: () => ({
+      plusIcon: mdiPlus,
+      lessThanIcon: mdiLessThan,
       transitionName: null
     }),
 
     computed: {
-      ...mapState(["debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
+      ...mapState(["debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear"])
     },
-    watch: {
-      '$route' (to, from) {
-        if (from.path === '/') {
-          if (to.path === '/settings') this.transitionName = 'slide-right';
-          else this.transitionName = 'slide-left';
-        } else if (from.path === '/settings') this.transitionName = 'slide-left';
-        else if (from.path === '/selectPerson') {
-          if (to.path === '/' || (to.path === '/modifyDebt' && this.selectedPersonPageTitle === 'Bearbeiten')) this.transitionName = 'slide-right';
-          else if (to.path === '/modifyDebt') this.transitionName = 'slide-left';
-        } else if (from.path === '/modifyDebt') {
-          if (to.path === '/selectPerson' || to.path === '/time') this.transitionName = 'slide-left';
-          else if (to.path === '/') this.transitionName = 'slide-right';
-          else if (to.path === '/finishedDebt') this.transitionName = null;
-        } else if (from.path === '/time') this.transitionName = 'slide-right';
-        else if (from.path === '/finishedDebt') {
-          if (to.path === '/') this.transitionName = 'slide-right';
-          else if (to.path === '/modifyDebt') this.transitionName = null;
-        } else if (from.path === '/debtsOfOnePerson') {
-          if (to.path === '/') this.transitionName = 'slide-right';
-        }
+    created() {
+      if (this.$workbox) {
+        this.$workbox.addEventListener("waiting", () => {
+          this.showUpdateUI = true;
+        });
       }
+      this.fetchAllDebts();
+      this.fetchSettings();
     },
     // beforeMount() {
     //   window.addEventListener("beforeunload", event => {
@@ -89,29 +81,75 @@
     //   })
     // },
     methods: {
+      async accept() {
+        this.showUpdateUI = false;
+        await this.$workbox.messageSW({ type: "SKIP_WAITING" });
+      },
+      async fetchAllDebts() {
+        let debts = await DebtsService.fetchAllDebts();
+        debts = debts.data.debts;
+        this.$store.commit("updateDebts", debts);
+        this.checkForNewPersons();
+      },
+      checkForNewPersons() {
+        let persons = [];
+        this.debts.forEach(debt => {
+          if(!persons.includes(debt.person)) {
+            persons.push(debt.person)
+          }
+        })
+        this.$store.dispatch("updatePersons", persons);
+      },
+      async fetchSettings() {
+        let settings = await SettingsService.fetchSettings();
+        settings = settings.data.settings;
+        this.$store.dispatch('updateShowTotalAmount', settings.showTotalAmount);
+        this.$store.dispatch('updateShowAllFirst', settings.showAllFirst);
+        this.$store.dispatch('updateEasyList', settings.easyList);
+        if(this.showAllFirst) this.$store.dispatch("updateSelectedDebt", 2);
+      },
       async save(){
+        let newDebt = {
+          _id: this.getRandomString(24),
+          person: this.selectedPerson,
+          isPositive: this.isPositive===false ? false : true,
+          amount: this.amount,
+          description: this.description,
+          archived: false,
+          date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+        }
+        let currentDebts = this.debts;
         // Überprüfen, ob Neu oder Bearbeiten anhand der ID
         if(this.selectedDebtId) {
           // ID gesetzt -> Update der ID
-          await DebtsService.updateDebt({
-            id: this.selectedDebtId,
-            person: this.selectedPerson,
-            isPositive: this.isPositive===false ? false : true,
-            amount: this.amount,
-            description: this.description,
-            date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+          newDebt._id = this.selectedDebtId;
+          newDebt.archived = this.archived;
+          await DebtsService.updateDebt(newDebt)
+          let indexToDelete = this.debts.findIndex(debt => {
+            return debt._id === this.selectedDebtId;
           });
+          currentDebts.splice(indexToDelete, 1);
         } else {
           // Keine ID gesetzt -> Neuer Debt
-          await DebtsService.addDebt({
-            person: this.selectedPerson,
-            isPositive: this.isPositive===false ? false : true,
-            amount: this.amount,
-            description: this.description,
-            date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
-          });
+          await DebtsService.addDebt(newDebt)
         }
+        newDebt.amount = {
+          $numberDecimal: newDebt.amount
+        }
+        currentDebts.push(newDebt);
+        this.$store.commit("updateDebts", currentDebts);
+        await this.checkForNewPersons();
         this.selectedDebtId === 0 ? this.$router.push('/') : this.$router.push('/finishedDebt');
+      },
+      getRandomString(length) {
+        let chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        let randS = "";
+
+        while(length > 0) {
+            randS += chars.charAt(Math.floor(Math.random() * chars.length));
+            length--;
+        }
+        return randS;
       },
       updateHeadingSelectPerson() {
         this.$store.dispatch('updateSelectedPersonPageTitle', 'Bearbeiten');
@@ -129,7 +167,11 @@
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
   @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+  #app {
+    font-family: 'Roboto', sans-serif;
+  }
 
   .app-title-font {
     font-family: 'Righteous', cursive;
@@ -145,22 +187,6 @@
     color: #4FC3F7; 
     cursor: pointer;
     margin-top: 32px;
-  }
-
-  /*slide transition*/
-
-  .slide-left-leave-active,
-  .slide-right-leave-active
-  {
-    transition: transform 0.3s ease-out;
-  }
-  .slide-left-enter,
-  .slide-right-leave-to {
-    transform: translateX(100%);
-  }
-  .slide-left-leave-to,
-  .slide-right-enter {
-    transform: translateX(-100%);
   }
 
   /* Global Styles */

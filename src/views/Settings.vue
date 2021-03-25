@@ -13,7 +13,7 @@
                         class="ml-3"
                         small
                         color="#4FC3F7"
-                        >mdi-check</v-icon>
+                        >{{ checkIcon }}</v-icon>
                     </v-list-item-icon>
                 </v-list-item>
                  <v-list-item @click="toggleSettings('showAllFirst')" class="backgroundWhite borderBottom">
@@ -25,7 +25,7 @@
                         class="ml-3"
                         small
                         color="#4FC3F7"
-                        >mdi-check</v-icon>
+                        >{{ checkIcon }}</v-icon>
                     </v-list-item-icon>
                 </v-list-item>
                  <v-list-item @click="toggleSettings('easyList')" class="backgroundWhite borderBottom">
@@ -37,7 +37,7 @@
                         class="ml-3"
                         small
                         color="#4FC3F7"
-                        >mdi-check</v-icon>
+                        >{{ checkIcon }}</v-icon>
                     </v-list-item-icon>
                 </v-list-item>
             </v-list-item-group>
@@ -48,6 +48,7 @@
 
 <script>
   import { mapState } from "vuex";
+  import { mdiCheck } from '@mdi/js';
   import SettingsService from "@/services/SettingsService";
   export default {
     name: 'Settings',
@@ -56,7 +57,7 @@
     },
     data: () => {
       return {
-
+        checkIcon: mdiCheck
       }
     },
     computed: {

@@ -3,7 +3,7 @@
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
             <div v-if="!archived" class="circleBig" v-bind:class="{ green: isPositive, red: isPositive === false}"></div>
-            <v-icon v-if="archived">mdi-check</v-icon>
+            <v-icon v-if="archived">{{ checkIcon }}</v-icon>
         </v-col>
         <v-col class="mt-4 ml-3 pb-0">
           <h1>{{ amount.replace(".", ",") }} €</h1>
@@ -80,7 +80,7 @@
                             </v-card>
                         </v-col>
                         <v-col>
-                            <v-icon @click="overlay = false" class="mt-2" color="light-blue lighten-2">mdi-close</v-icon>
+                            <v-icon @click="overlay = false" class="mt-2" color="light-blue lighten-2">{{ closeIcon }}</v-icon>
                         </v-col>
                     </v-row>
                 </v-overlay>
@@ -94,14 +94,15 @@
 
 <script>
 import DebtsService from "@/services/DebtsService";
+import { mdiCheck } from '@mdi/js';
+import { mdiClose } from '@mdi/js';
 import { mapState } from "vuex";
 export default {
     name: 'FinishedDebt',
-    components: {
-        //HelloWorld,
-    },
     data () {
       return {
+        checkIcon: mdiCheck,
+        closeIcon: mdiClose,
         absolute: true,
         opacity: 1,
         overlay: false,

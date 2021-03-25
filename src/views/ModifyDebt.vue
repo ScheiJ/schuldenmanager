@@ -3,7 +3,7 @@
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
             <div v-if="!archived" class="circleBig" @click="turnAround" v-bind:class="{ turnGreen: isPositive, turnRed: isPositive === false}"></div>
-            <v-icon v-if="archived">mdi-check</v-icon>
+            <v-icon v-if="archived">{{ checkIcon }}</v-icon>
         </v-col>
         <v-col class="mt-3 ml-3 pb-0">
           <vuetify-money
@@ -53,28 +53,33 @@
             depressed
             color="#ffffff"
             class="mb-3 ml-4"
-            ><v-icon>mdi-map-marker-radius</v-icon></v-btn>
+            ><v-icon>{{ mapMarkerRadiusIcon }}</v-icon></v-btn>
             <br>
             <v-btn
             depressed
             color="#ffffff"
             class="ml-4"
-            ><v-icon>mdi-camera</v-icon></v-btn>
+            ><v-icon>{{ cameraIcon }}</v-icon></v-btn>
         </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
+  import { mdiCheck } from '@mdi/js';
+  import { mdiMapMarkerRadius } from '@mdi/js';
+  import { mdiCamera } from '@mdi/js';
   import { mapState } from "vuex";
   export default {
     name: 'ModifyDebt',
-
     components: {
       //HelloWorld,
     },
     data: () => {
       return {
+        checkIcon: mdiCheck,
+        mapMarkerRadiusIcon: mdiMapMarkerRadius,
+        cameraIcon: mdiCamera,
         placeholder: "0,00",
         readonly: false,
         disabled: false,
