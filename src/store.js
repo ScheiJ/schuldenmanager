@@ -30,7 +30,7 @@ export default new Vuex.Store({
     selectedDebtId: 0,
     selectedPersonPageBack: 'Zurück',
     selectedPersonPageTitle: 'Neu',
-    timeCloseButton: "Schließen",
+    dateCloseButton: "Schließen",
     isPositive: null,
     amount: "0.00",
     description: "",
@@ -75,8 +75,8 @@ export default new Vuex.Store({
     updateSelectedPersonPageTitle(state, value) {
       state.selectedPersonPageTitle = value;
     },
-    updateTimeCloseButton(state, value) {
-      state.timeCloseButton = value;
+    updateDateCloseButton(state, value) {
+      state.dateCloseButton = value;
     },
     updateIsPositive(state, value) {
       state.isPositive = value;
@@ -143,8 +143,8 @@ export default new Vuex.Store({
     updateSelectedPersonPageTitle(context, value) {
       context.commit("updateSelectedPersonPageTitle", value);
     },
-    updateTimeCloseButton(context, value) {
-      context.commit("updateTimeCloseButton", value);
+    updateDateCloseButton(context, value) {
+      context.commit("updateDateCloseButton", value);
     },
     updateIsPositive(context, value) {
       context.commit("updateIsPositive", value);

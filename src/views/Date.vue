@@ -4,7 +4,7 @@
     v-model="picker"
     locale="de-de"
     year-icon="mdi-calendar-blank"
-    @change="$store.dispatch('updateTimeCloseButton', 'Fertig')"
+    @change="$store.dispatch('updateDateCloseButton', 'Fertig')"
     ></v-date-picker>
   </v-row>
 </template>
@@ -12,20 +12,20 @@
 <script>
 import { mapState } from "vuex";
 export default {
-    name: 'Time',
+    name: 'Date',
     data () {
       return {
         picker: new Date().toISOString().substr(0, 10)
       }
     },
     computed: {
-      ...mapState(["selectedPerson", "selectedDay", "selectedMonth", "selectedYear", "timeCloseButton"])
+      ...mapState(["selectedPerson", "selectedDay", "selectedMonth", "selectedYear", "dateCloseButton"])
     },
     mounted: function () {
         this.picker = new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10);
     },
     beforeDestroy: function () {
-        this.$store.dispatch('updateTimeCloseButton', "Schließen")
+        this.$store.dispatch('updateDateCloseButton', "Schließen")
     },
     watch: {
       picker: function() {

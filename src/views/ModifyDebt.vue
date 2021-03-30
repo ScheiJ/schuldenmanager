@@ -21,7 +21,7 @@
         </v-col>
         <v-col class="mt-3 col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pb-0">
             <v-text-field
-            @click="$router.push('/time')"
+            @click="$router.push('/date')"
             type="text"
             solo
             flat

@@ -29,9 +29,9 @@ export default new Router({
       component: () => import('./views/ModifyDebt.vue')
     },
     {
-      path: '/time',
-      name: 'Time',
-      component: () => import('./views/Time.vue')
+      path: '/date',
+      name: 'Date',
+      component: () => import('./views/Date.vue')
     },
      {
       path: '/geolocation',
