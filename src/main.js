@@ -4,7 +4,13 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
-import "./plugins/vuetify-money.js";
+import * as VueGoogleMaps from 'vue2-google-maps';
+
+Vue.use(VueGoogleMaps, {
+    load: {
+        key: 'AIzaSyAvw2-EXN9KDOly2VBWkctz1T6izuYXC2k'   
+    },
+})
 
 Vue.config.productionTip = false
 

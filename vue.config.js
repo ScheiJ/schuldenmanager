@@ -1,7 +1,5 @@
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = {
-  transpileDependencies: [
-    'vuetify'
-  ], 
   pwa: {
     name: "Schuldenmanager",
     themeColor: "#42b983",
@@ -11,5 +9,17 @@ module.exports = {
     workboxOptions: {
       swSrc: "src/service-worker.js"
     },
+  },
+  configureWebpack: {
+    plugins: [
+      //new BundleAnalyzerPlugin(),
+    ],
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+        chunks: 'all'
+      }
+    }
   }
 }

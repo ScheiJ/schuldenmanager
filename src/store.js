@@ -38,6 +38,14 @@ export default new Vuex.Store({
     selectedMonth: new Date().getMonth()+1,
     selectedYear: new Date().getFullYear(),
     archived: false,
+    currentPosition: {
+      lat: 0,
+      lng: 0
+    },
+    position: {
+      lat: 0,
+      lng: 0
+    }
   },
   mutations: {
     updateSettings(state, value) {
@@ -99,6 +107,12 @@ export default new Vuex.Store({
     },
     toggleSetting(state, value) {
       state.settings[value].checked = !state.settings[value].checked;
+    },
+    updatePosition(state, value) {
+      state.position = value;
+    },
+    updateCurrentPosition(state, value) {
+      state.currentPosition = value;
     }
   },
   actions: {
@@ -161,6 +175,12 @@ export default new Vuex.Store({
     },
     toggleSetting(context, value) {
       context.commit("toggleSetting", value);
+    },
+    updatePosition(context, value) {
+      context.commit("updatePosition", value);
+    },
+    updateCurrentPosition(context, value) {
+      context.commit("updateCurrentPosition", value);
     }
   }
 })

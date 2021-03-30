@@ -3,7 +3,7 @@
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
             <div v-if="!archived" class="circleBig" @click="turnAround" v-bind:class="{ turnGreen: isPositive, turnRed: isPositive === false}"></div>
-            <v-icon v-if="archived">{{ checkIcon }}</v-icon>
+            <v-icon v-if="archived">{{ svgCheck }}</v-icon>
         </v-col>
         <v-col class="mt-3 ml-3 pb-0">
           <vuetify-money
@@ -35,41 +35,42 @@
         </v-col>
     </v-row>
     <v-row>
-        <v-col cols="1" class="ml-3 mr-0 pt-0">
-        </v-col>
-        <v-col class="pt-0">
-            <v-textarea
-            v-model="description"
-            id="textFieldDescription"
-            label="Keine Beschreibung"
-            background-color="#EEEEEE"
-            rows="7"
-            solo
-            flat
-            no-resize
-            ></v-textarea>
-        </v-col>
-        <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pt-0">
-            <v-btn
-            depressed
-            color="#ffffff"
-            class="mb-3 ml-4"
-            ><v-icon>{{ mapMarkerRadiusIcon }}</v-icon></v-btn>
-            <br>
-            <v-btn
-            depressed
-            color="#ffffff"
-            class="ml-4"
-            ><v-icon>{{ cameraIcon }}</v-icon></v-btn>
-        </v-col>
+      <v-col cols="1" class="ml-3 mr-0 pt-0">
+      </v-col>
+      <v-col class="pt-0">
+          <v-textarea
+          v-model="description"
+          id="textFieldDescription"
+          label="Keine Beschreibung"
+          background-color="#EEEEEE"
+          solo
+          flat
+          no-resize
+          auto-grow
+          ></v-textarea>
+      </v-col>
+      <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pt-0">
+          <v-btn
+          v-bind:style="(this.position.lat && this.position.lng) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
+          @click="$router.push('/geolocation')"
+          depressed
+          color="#ffffff"
+          class="mb-3 ml-4"
+          ><v-icon>{{ svgMap }}</v-icon></v-btn>
+          <br>
+          <v-btn
+          depressed
+          color="#ffffff"
+          class="ml-4"
+          ><v-icon>{{ svgCamera }}</v-icon></v-btn>
+      </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
-  import { mdiCheck } from '@mdi/js';
-  import { mdiMapMarkerRadius } from '@mdi/js';
-  import { mdiCamera } from '@mdi/js';
+  import { mdiCheck, mdiMap, mdiCamera } from '@mdi/js';
+  import "@/plugins/vuetify-money.js";
   import { mapState } from "vuex";
   import getFullDateMixin from "../mixins/getFullDateMixin";
   export default {
@@ -77,9 +78,9 @@
     mixins: [getFullDateMixin],
     data: () => {
       return {
-        checkIcon: mdiCheck,
-        mapMarkerRadiusIcon: mdiMapMarkerRadius,
-        cameraIcon: mdiCamera,
+        svgCheck: mdiCheck,
+        svgMap: mdiMap,
+        svgCamera: mdiCamera,
         placeholder: "0,00",
         readonly: false,
         disabled: false,
@@ -101,7 +102,7 @@
       }
     },
     computed: {
-      ...mapState(["isPositive", "amount", "description", "archived"]),
+      ...mapState(["isPositive", "amount", "description", "archived", "position"]),
       amount: {
         get() {
           return this.$store.state.amount;

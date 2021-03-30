@@ -13,7 +13,7 @@
                         class="ml-3"
                         small
                         color="#4FC3F7"
-                        >{{ checkIcon }}</v-icon>
+                        >{{ svgCheck }}</v-icon>
                     </v-list-item-icon>
                 </v-list-item>
             </v-list-item-group>
@@ -23,18 +23,18 @@
 </template>
 
 <script>
-  import { mapState } from "vuex";
   import { mdiCheck } from '@mdi/js';
-  import SettingsService from "@/services/SettingsService";
+  import { mapState } from "vuex";
+  import { setSettings } from "@/services/SettingsService";
   import modifyLocalDebtsMixin from "../mixins/modifyLocalDebtsMixin";
   export default {
     name: 'Settings',
-    data: () => {
+    mixins: [modifyLocalDebtsMixin],
+    data () {
       return {
-        checkIcon: mdiCheck
+        svgCheck: mdiCheck
       }
     },
-    mixins: [modifyLocalDebtsMixin],
     computed: {
         ...mapState(["settings"]),
     },
@@ -42,7 +42,7 @@
       async toggleSettings(settingId) {
         let indexToToggleSetting = this.findIndexInLocalArray(this.settings, settingId);
         this.$store.dispatch('toggleSetting', indexToToggleSetting);
-        await SettingsService.setSettings({
+        await setSettings({
           _id: settingId
         });
       }

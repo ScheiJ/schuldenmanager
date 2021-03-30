@@ -33,6 +33,11 @@ export default new Router({
       name: 'Time',
       component: () => import('./views/Time.vue')
     },
+     {
+      path: '/geolocation',
+      name: 'Geolocation',
+      component: () => import('./views/Geolocation.vue')
+    },
     {
       path: '/finishedDebt',
       name: 'FinishedDebt',

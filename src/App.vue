@@ -6,14 +6,14 @@
       dark
       absolute
       flat
-      style="position: fixed"
+      style="position: fixed; height:8vh"
     >
       <!-- Linke Seite -->
-      <router-link class="routerLink" to="/settings"><v-app-bar-nav-icon v-if="$route.path === '/'" color="light-blue lighten-2"></v-app-bar-nav-icon></router-link>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>{{ selectedPersonPageBack }}</router-link>
-      <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>Zurück</router-link>
-      <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ lessThanIcon }}</v-icon>{{ selectedPerson }}</router-link>
+      <router-link class="routerLink" to="/settings"><v-icon v-if="$route.path === '/'" color="light-blue lighten-2">{{ svgMenu }}</v-icon></router-link>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
+      <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>Zurück</router-link>
+      <router-link v-if="$route.path === '/time' || $route.path === '/geolocation'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPerson }}</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
@@ -29,40 +29,40 @@
       <v-spacer></v-spacer>
 
       <!-- Rechte Seite -->
-      <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">{{ plusIcon }}</v-icon></router-link>
-      <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ plusIcon }}</v-icon></router-link>
+      <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">{{ svgPlus }}</v-icon></router-link>
+      <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgPlus }}</v-icon></router-link>
       <router-link v-if="$route.path === '/settings'" class="routerLink" to="/">Fertig</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="save">Sichern</v-toolbar-items>
       <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/modifyDebt">Bearbeiten</router-link>
       <router-link v-if="$route.path === '/time'" class="routerLink" to="/modifyDebt">{{ timeCloseButton }}</router-link>
+      <v-toolbar-items v-if="$route.path === '/geolocation'" style="cursor: pointer" @click="saveLocation"><v-icon color="light-blue lighten-2">{{ svgMapMarkerRadius }}</v-icon></v-toolbar-items>
     </v-app-bar>
 
     <v-main class="backgroundGrey">
       <v-container fluid>
-        <transition :name="transitionName" mode="out-in">
-          <router-view />
-        </transition>
+        <router-view />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-  import { mdiPlus } from '@mdi/js'
-  import { mdiLessThan } from '@mdi/js';
-  import DebtsService from "@/services/DebtsService";
-  import SettingsService from "@/services/SettingsService";
+  import { mdiLessThan, mdiPlus, mdiMenu, mdiMapMarkerRadius } from '@mdi/js';
+  import { fetchAllDebts, addDebt, updateDebt } from "@/services/DebtsService";
+  import { fetchSettings } from "@/services/SettingsService";
   import { mapState } from "vuex";
   export default {
     name: 'App',
     data: () => ({
-      plusIcon: mdiPlus,
-      lessThanIcon: mdiLessThan,
+      svgLessThan: mdiLessThan,
+      svgPlus: mdiPlus,
+      svgMenu: mdiMenu,
+      svgMapMarkerRadius: mdiMapMarkerRadius,
       transitionName: null
     }),
 
     computed: {
-      ...mapState(["debts", "selectedPerson", "selectedDebt", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear", "settings"])
+      ...mapState(["debts", "selectedPerson", "selectedDebt", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "timeCloseButton", "selectedDay", "selectedMonth", "selectedYear", "currentPosition", "position", "settings"])
     },
     created() {
       if (this.$workbox) {
@@ -70,16 +70,16 @@
           this.showUpdateUI = true;
         });
       }
-      this.fetchAllDebts();
-      this.fetchSettings();
+      this.fetchDebts();
+      this.getSettings();
     },
     methods: {
       async accept() {
         this.showUpdateUI = false;
         await this.$workbox.messageSW({ type: "SKIP_WAITING" });
       },
-      async fetchAllDebts() {
-        let debts = await DebtsService.fetchAllDebts();
+      async fetchDebts() {
+        let debts = await fetchAllDebts();
         debts = debts.data.debts;
         this.$store.commit("updateDebts", debts);
         this.checkForNewPersons();
@@ -93,8 +93,8 @@
         })
         this.$store.dispatch("updatePersons", persons);
       },
-      async fetchSettings() {
-        let settings = await SettingsService.fetchSettings();
+      async getSettings() {
+        let settings = await fetchSettings();
         settings = settings.data.settings;
         this.$store.dispatch('updateSettings', settings);
       },
@@ -106,7 +106,8 @@
           amount: this.amount,
           description: this.description,
           archived: false,
-          date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10)
+          date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10),
+          position: this.position
         }
         let currentDebts = this.debts;
         // Überprüfen, ob Neu oder Bearbeiten anhand der ID
@@ -114,14 +115,14 @@
           // ID gesetzt -> Update der ID
           newDebt._id = this.selectedDebtId;
           newDebt.archived = this.archived;
-          await DebtsService.updateDebt(newDebt)
+          await updateDebt(newDebt)
           let indexToDelete = this.debts.findIndex(debt => {
             return debt._id === this.selectedDebtId;
           });
           currentDebts.splice(indexToDelete, 1);
         } else {
           // Keine ID gesetzt -> Neuer Debt
-          await DebtsService.addDebt(newDebt)
+          await addDebt(newDebt)
         }
         newDebt.amount = {
           $numberDecimal: newDebt.amount
@@ -130,6 +131,9 @@
         this.$store.commit("updateDebts", currentDebts);
         await this.checkForNewPersons();
         this.selectedDebtId === 0 ? this.$router.push('/') : this.$router.push('/finishedDebt');
+      },
+      saveLocation() {
+        this.$store.dispatch("updatePosition", this.currentPosition);
       },
       getRandomString(length) {
         let chars = "abcdefghijklmnopqrstuvwxyz0123456789";

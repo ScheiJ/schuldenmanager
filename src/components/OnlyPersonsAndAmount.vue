@@ -6,7 +6,7 @@
               <v-list-item @click="showDebtsOfOnePerson(person)" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
                 <v-list-item-icon class="mt-5">
                   <div v-if="!person.archiviert" class="circleSmall" v-bind:class="{ red: parseInt(getAmountOfPerson(person.name)) < 0 }"></div>
-                  <v-icon v-if="person.archiviert">{{ checkIcon }}</v-icon>
+                  <v-icon v-if="person.archiviert">{{ svgCheck }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>{{ person.name }}</v-list-item-title>
@@ -18,7 +18,7 @@
                   class="ml-3 mt-1"
                   small
                   color="#BDBDBD"
-                  >{{ greaterThanIcon }}</v-icon>
+                  >{{ svgGreaterThan }}</v-icon>
                 </v-list-item-icon>
               </v-list-item>
           </v-list-item-group>
@@ -28,17 +28,18 @@
 </template>
 
 <script>
-import personsDebtsMixin from "../mixins/personsDebtsMixin";
-import { mdiGreaterThan } from '@mdi/js';
-import { mdiCheck } from '@mdi/js';
+import { mdiCheck, mdiGreaterThan } from '@mdi/js';
+import getAmountOfPersonMixin from "../mixins/getAmountOfPersonMixin";
+import offenArchiviertMixin from "../mixins/offenArchiviertMixin";
+import filterPersonsMixin from "../mixins/filterPersonsMixin";
 export default {
   name: "OnlyPersonsAndAmount",
   data: () => ({
-    greaterThanIcon: mdiGreaterThan,
-    checkIcon: mdiCheck,
+    svgCheck: mdiCheck,
+    svgGreaterThan: mdiGreaterThan,
     transitionName: null
   }),
-  mixins: [personsDebtsMixin],
+  mixins: [getAmountOfPersonMixin, offenArchiviertMixin, filterPersonsMixin],
   methods: {
     filterPersonsAgain() {
         let allDebtsIndexOfAllArchived = []

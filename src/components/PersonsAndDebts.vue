@@ -8,7 +8,7 @@
               <v-list-item v-for="debt in filterDebts(person)" :key="debt._id" @click="showFinishedDebt(debt)" class="backgroundWhite" style="border-bottom: 3px solid #EEEEEE">
                 <v-list-item-icon  v-bind:class="{ 'mt-5': debt.description !== '' }">
                     <div v-if="!debt.archived" class="circleSmall" v-bind:class="{ red: debt.isPositive === false }"></div>
-                    <v-icon v-if="debt.archived">{{ checkIcon }}</v-icon>
+                    <v-icon v-if="debt.archived">{{ svgCheck }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-subtitle>{{ getNormalFormat(debt.date) }}</v-list-item-subtitle>
@@ -20,7 +20,7 @@
                   class="ml-3"
                   small
                   color="#BDBDBD"
-                  >{{ greaterThanIcon }}</v-icon>
+                  >{{ svgGreaterThan }}</v-icon>
                 </v-list-item-icon>
               </v-list-item>
           </v-list-item-group>
@@ -30,18 +30,17 @@
 </template>
 
 <script>
-import personsDebtsMixin from "../mixins/personsDebtsMixin";
-import { mdiGreaterThan } from '@mdi/js';
-import { mdiCheck } from '@mdi/js';
+import { mdiCheck, mdiGreaterThan } from '@mdi/js';
+import getAmountOfPersonMixin from "../mixins/getAmountOfPersonMixin";
+import filterDebtsMixin from "../mixins/filterDebtsMixin";
+import filterPersonsMixin from "../mixins/filterPersonsMixin";
 export default {
   name: "PersonsAndDebts",
-  mixins: [personsDebtsMixin],
-  data: function() {
-    return {
-      greaterThanIcon: mdiGreaterThan,
-      checkIcon: mdiCheck,
-    };
-  },
+  mixins: [getAmountOfPersonMixin, filterDebtsMixin, filterPersonsMixin],
+  data: () => ({
+    svgCheck: mdiCheck,
+    svgGreaterThan: mdiGreaterThan
+  }),
   methods: {
       getNormalFormat(date){
         let newDate = new Date(date);
@@ -63,6 +62,7 @@ export default {
         this.$store.dispatch("updateSelectedMonth", parseInt(debtDate.substr(5, 2))-1);
         this.$store.dispatch("updateSelectedYear", parseInt(debtDate.substr(0, 4)));
         this.$store.dispatch("updateArchived", debt.archived);
+        this.$store.dispatch("updatePosition", debt.position);
         this.$router.push('finishedDebt');
       },
   }

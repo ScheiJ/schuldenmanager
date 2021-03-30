@@ -33,45 +33,24 @@
     </v-item-group>
     <PersonsAndDebts v-if="easyList.checked" />
     <OnlyPersonsAndAmount v-if="!easyList.checked" />
-    <v-row v-if="showTotalAmount.checked">
-      <v-col class="pa-0">
-        <v-list class="pa-0 mx-0">
-          <v-list-item dark style="background-color: #37474F; position: fixed; left: 0; bottom: 0; width: 100%;">
-            <v-list-item-content>
-              <v-list-item-title>Gesamt:</v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-icon v-if="total >= 0">
-              {{ total }},00 €
-              <v-icon class="circleSmall ml-3"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-icon v-if="total < 0">
-              {{ total.toString().substring(1) }},00 €
-              <v-icon class="circleSmall ml-3 red"></v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-        </v-list>
-      </v-col>
-    </v-row>
+    <TotalAmount v-if="showTotalAmount.checked" />
   </div>
 </template>
 
 <script>
   import { mapState } from "vuex";
-  import PersonsAndDebts from "@/components/PersonsAndDebts.vue";
-  import OnlyPersonsAndAmount from "@/components/OnlyPersonsAndAmount.vue";
-  import personsDebtsMixin from "../mixins/personsDebtsMixin";
   export default {
     name: 'Home',
-    mixins: [personsDebtsMixin],
     components: {
-      PersonsAndDebts,
-      OnlyPersonsAndAmount
+      PersonsAndDebts: () => import('@/components/PersonsAndDebts.vue'),
+      OnlyPersonsAndAmount: () => import('@/components/OnlyPersonsAndAmount.vue'),
+      TotalAmount: () => import('@/components/TotalAmount.vue')
     },
     data: () => ({
       selectionText: ["Offen", "Archiviert", "Alle"]
     }),
     computed: {
-      ...mapState(["persons", "searchInput", "selectedDebt", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived", "settings"]),
+      ...mapState(["persons", "searchInput", "selectedDebt", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived", "position", "selectedPosition", "settings"]),
       searchInput: {
         get() {
           return this.$store.state.searchInput;
@@ -110,13 +89,7 @@
         return this.settings.find(setting => {
           if (setting.name === "showAllFirst") return setting;
         })
-      },
-      total() {
-        let initial = 0;
-        return this.persons.reduce((accumulator, currentValue) => {
-          return accumulator + parseInt(this.getAmountOfPerson(currentValue));
-        },initial)
-      },
+      }
     },
     mounted: function() {
       this.resetStates();
@@ -135,6 +108,8 @@
         this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
         this.$store.dispatch('updateSelectedPerson', "");
         this.$store.dispatch('updateArchived', false);
+        this.$store.dispatch('updatePosition', {lat:0, lng:0});
+        this.$store.dispatch('updateCurrentPosition', {lat:0, lng:0});
       },
     }
   }
