@@ -1,10 +1,11 @@
 import { mapState } from "vuex";
 export default {
     computed: {
-        ...mapState(["selectedDay", "selectedMonth", "selectedYear"]),
+        ...mapState(["selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp"]),
         selectedDate: function () {
-            var d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
-            var month = new Array();
+            let d;
+            this.$route.path === '/modifyDebt' ? d = new Date(this.selectedYearTemp, this.selectedMonthTemp, this.selectedDayTemp) : d = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
+            let month = new Array();
             month[0] = "Jan.";
             month[1] = "Feb.";
             month[2] = "März";

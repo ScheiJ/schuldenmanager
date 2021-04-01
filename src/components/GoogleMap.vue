@@ -17,16 +17,18 @@ import VueGeolocation from 'vue-browser-geolocation';
 export default {
     name: 'GoogleMap',
     computed: {
-      ...mapState(["position", "currentPosition"])
+      ...mapState(["position", "currentPosition", "positionTemp"])
     },
     created() {
-        if(!this.position.lat && !this.position.lng) {
+        let positionHelper = this.$router.path === '/geolocation' ? this.positionTemp : this.position;
+
+        if (!positionHelper.lat && !positionHelper) {
             VueGeolocation.getLocation({})
             .then(coordinates => {
                 this.$store.dispatch("updateCurrentPosition", coordinates);
             })
             .catch(error => alert(error))
-        } else this.$store.dispatch("updateCurrentPosition", this.position);
+        } else this.$store.dispatch("updateCurrentPosition", positionHelper); 
     },
 }
 </script>

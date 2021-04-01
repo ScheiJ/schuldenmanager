@@ -23,7 +23,7 @@ export default {
     },
     methods: {
         deletePosition() {
-            this.$store.dispatch("updatePosition", {lat: 0, lng:0});
+            this.$store.dispatch("updatePositionTemp", {lat: 0, lng:0});
             this.$router.push('/modifyDebt');
         }
     }

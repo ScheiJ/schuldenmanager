@@ -2,12 +2,12 @@
   <div>
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
-            <div v-if="!archived" class="circleBig" @click="turnAround" v-bind:class="{ turnGreen: isPositive, turnRed: isPositive === false}"></div>
-            <v-icon v-if="archived">{{ svgCheck }}</v-icon>
+            <div v-if="!archivedTemp" class="circleBig" @click="turnAround" v-bind:class="{ turnGreen: isPositiveTemp, turnRed: isPositiveTemp === false}"></div>
+            <v-icon v-if="archivedTemp">{{ svgCheck }}</v-icon>
         </v-col>
         <v-col class="mt-3 ml-3 pb-0">
           <vuetify-money
-            v-model="amount"
+            v-model="amountTemp"
             v-bind:placeholder="placeholder"
             v-bind:readonly="readonly"
             v-bind:disabled="disabled"
@@ -39,7 +39,7 @@
       </v-col>
       <v-col class="pt-0">
           <v-textarea
-          v-model="description"
+          v-model="descriptionTemp"
           id="textFieldDescription"
           label="Keine Beschreibung"
           background-color="#EEEEEE"
@@ -51,7 +51,7 @@
       </v-col>
       <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pt-0">
           <v-btn
-          v-bind:style="(this.position.lat || this.position.lng) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
+          v-bind:style="(this.positionTemp.lat || this.positionTemp.lng) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
           @click="$router.push('/geolocation')"
           depressed
           color="#ffffff"
@@ -59,7 +59,7 @@
           ><v-icon>{{ svgMap }}</v-icon></v-btn>
           <br>
           <v-btn
-          v-bind:style="this.picture ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
+          v-bind:style="this.pictureTemp ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
           @click="$store.dispatch('updateShowImageSelection', true)"
           depressed
           color="#ffffff"
@@ -108,28 +108,28 @@
       }
     },
     computed: {
-      ...mapState(["isPositive", "amount", "description", "archived", "position", "picture", "showImageSelection"]),
-      amount: {
+      ...mapState(["isPositiveTemp", "amountTemp", "descriptionTemp", "archivedTemp", "positionTemp", "pictureTemp", "showImageSelection"]),
+      amountTemp: {
         get() {
-          return this.$store.state.amount;
+          return this.$store.state.amountTemp;
         },
         set(value) {
-          this.$store.dispatch('updateAmount', value);
+          this.$store.dispatch('updateAmountTemp', value);
         }
       },
-      description: {
+      descriptionTemp: {
         get() {
-          return this.$store.state.description;
+          return this.$store.state.descriptionTemp;
         },
         set(value) {
-          this.$store.dispatch('updateDescription', value);
+          this.$store.dispatch('updateDescriptionTemp', value);
         }
       },
     },
     methods: {
       turnAround() {
-          if(this.isPositive === null) this.$store.dispatch("updateIsPositive", false);
-          else this.$store.dispatch("updateIsPositive", !this.isPositive);
+          if(this.isPositiveTemp === null) this.$store.dispatch("updateIsPositiveTemp", false);
+          else this.$store.dispatch("updateIsPositiveTemp", !this.isPositiveTemp);
       },
     }
   }

@@ -19,19 +19,19 @@ export default {
       }
     },
     computed: {
-      ...mapState(["selectedPerson", "selectedDay", "selectedMonth", "selectedYear", "dateCloseButton"])
+      ...mapState(["selectedDayTemp", "selectedMonthTemp", "selectedYearTemp", "dateCloseButton"])
     },
     mounted: function () {
-        this.picker = new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10);
+        this.picker = new Date(this.selectedYearTemp, this.selectedMonthTemp, Number(this.selectedDayTemp)+1).toISOString().substr(0, 10);
     },
     beforeDestroy: function () {
         this.$store.dispatch('updateDateCloseButton', "Schließen")
     },
     watch: {
       picker: function() {
-        this.$store.dispatch('updateSelectedDay', this.picker.substr(8, 2));
-        this.$store.dispatch('updateSelectedMonth', Number(this.picker.substr(5, 2))-1);
-        this.$store.dispatch('updateSelectedYear', this.picker.substr(0, 4));
+        this.$store.dispatch('updateSelectedDayTemp', this.picker.substr(8, 2));
+        this.$store.dispatch('updateSelectedMonthTemp', Number(this.picker.substr(5, 2))-1);
+        this.$store.dispatch('updateSelectedYearTemp', this.picker.substr(0, 4));
       }
     }
 }

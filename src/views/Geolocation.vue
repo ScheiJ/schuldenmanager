@@ -4,7 +4,7 @@
             <GoogleMap />
         </v-row>
         <v-row>
-            <DeleteGeolocation v-if="position.lat || position.lng" />
+            <DeleteGeolocation v-if="positionTemp.lat || positionTemp.lng" />
         </v-row>
     </div>
 </template>
@@ -18,7 +18,7 @@ export default {
         DeleteGeolocation: () => import('@/components/DeleteGeolocation.vue')
     },
     computed: {
-      ...mapState(["position"])
+      ...mapState(["positionTemp"])
     }
 }
 </script>

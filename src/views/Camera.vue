@@ -76,7 +76,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(["picture"])
+        ...mapState(["pictureTemp"])
     },
     mounted() {
         this.createCameraElement(this.mode);
@@ -137,7 +137,7 @@ export default {
 
                 formData.append('image', file, file.name);
             });
-            this.$store.dispatch("updatePicture", formData);
+            this.$store.dispatch("updatePictureTemp", formData);
         }
     }
 }

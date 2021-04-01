@@ -47,25 +47,24 @@
     data: () => {
       return {
         svgGreaterThan: mdiGreaterThan,
-        person: "",
-        personsToShow: []
+        person: ""
       }
     },
-    mounted: function () {
-      this.person = this.selectedPerson;
-    },
     computed: {
-      ...mapState(["persons", "selectedPerson"]),
+      ...mapState(["persons", "selectedPersonTemp"]),
       filterPersons: function() {
         return this.persons.filter(person => {
           return person.includes(this.person);
         })
       }
     },
+    mounted: function () {
+      this.person = this.selectedPersonTemp;
+    },
     methods: {
       async selectPerson(person) {
         if(person) {
-          if(this.selectedPerson !== person) this.$store.dispatch("updateSelectedPerson", person);
+          if(this.selectedPersonTemp !== person) this.$store.dispatch("updateSelectedPersonTemp", person);
           this.$router.push('/modifyDebt');
         }
       },

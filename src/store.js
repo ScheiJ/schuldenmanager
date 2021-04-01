@@ -27,23 +27,36 @@ export default new Vuex.Store({
     searchInput: "",
     selectedDebt: 0,
     selectedPerson: "",
+    selectedPersonTemp: "",
     selectedDebtId: 0,
     selectedPersonPageBack: 'Zurück',
     selectedPersonPageTitle: 'Neu',
     dateCloseButton: "Schließen",
     isPositive: null,
+    isPositiveTemp: null,
     amount: "0.00",
+    amountTemp: "0.00",
     description: "",
+    descriptionTemp: "",
     selectedDay: new Date().getDate(),
+    selectedDayTemp: new Date().getDate(),
     selectedMonth: new Date().getMonth()+1,
+    selectedMonthTemp: new Date().getMonth()+1,
     selectedYear: new Date().getFullYear(),
+    selectedYearTemp: new Date().getFullYear(),
     archived: false,
+    archivedTemp: false,
     picture: "",
+    pictureTemp: "",
     currentPosition: {
       lat: 0,
       lng: 0
     },
     position: {
+      lat: 0,
+      lng: 0
+    },
+    positionTemp: {
       lat: 0,
       lng: 0
     },
@@ -68,6 +81,9 @@ export default new Vuex.Store({
     updateSelectedPerson(state, value) {
       state.selectedPerson = value;
     },
+    updateSelectedPersonTemp(state, value) {
+      state.selectedPersonTemp = value;
+    },
     updateSelectedDebtId(state, value) {
       state.selectedDebtId = value;
     },
@@ -83,23 +99,44 @@ export default new Vuex.Store({
     updateIsPositive(state, value) {
       state.isPositive = value;
     },
+    updateIsPositiveTemp(state, value) {
+      state.isPositiveTemp = value;
+    },
     updateAmount(state, value) {
       state.amount = value;
+    },
+    updateAmountTemp(state, value) {
+      state.amountTemp = value;
     },
     updateDescription(state, value) {
       state.description = value;
     },
+    updateDescriptionTemp(state, value) {
+      state.descriptionTemp = value;
+    },
     updateSelectedDay(state, value) {
       state.selectedDay = value;
+    },
+    updateSelectedDayTemp(state, value) {
+      state.selectedDayTemp = value;
     },
     updateSelectedMonth(state, value) {
       state.selectedMonth = value;
     },
+    updateSelectedMonthTemp(state, value) {
+      state.selectedMonthTemp = value;
+    },
     updateSelectedYear(state, value) {
       state.selectedYear = value;
     },
+    updateSelectedYearTemp(state, value) {
+      state.selectedYearTemp = value;
+    },
     updateArchived(state, value) {
       state.archived = value;
+    },
+    updateArchivedTemp(state, value) {
+      state.archivedTemp = value;
     },
     toggleArchivedInDebts(state, value) {
       state.debts[value].archived = !state.debts[value].archived;
@@ -113,8 +150,14 @@ export default new Vuex.Store({
     updatePosition(state, value) {
       state.position = value;
     },
+    updatePositionTemp(state, value) {
+      state.positionTemp = value;
+    },
     updatePicture(state, value) {
       state.picture = value;
+    },
+    updatePictureTemp(state, value) {
+      state.pictureTemp = value;
     },
     updateCurrentPosition(state, value) {
       state.currentPosition = value;
@@ -142,6 +185,9 @@ export default new Vuex.Store({
     updateSelectedPerson(context, value) {
       context.commit("updateSelectedPerson", value);
     },
+    updateSelectedPersonTemp(context, value) {
+      context.commit("updateSelectedPersonTemp", value);
+    },
     updateSelectedDebtId(context, value) {
       context.commit("updateSelectedDebtId", value);
     },
@@ -157,23 +203,44 @@ export default new Vuex.Store({
     updateIsPositive(context, value) {
       context.commit("updateIsPositive", value);
     },
+    updateIsPositiveTemp(context, value) {
+      context.commit("updateIsPositiveTemp", value);
+    },
     updateAmount(context, value) {
       context.commit("updateAmount", value);
+    },
+    updateAmountTemp(context, value) {
+      context.commit("updateAmountTemp", value);
     },
     updateDescription(context, value) {
       context.commit("updateDescription", value);
     },
+    updateDescriptionTemp(context, value) {
+      context.commit("updateDescriptionTemp", value);
+    },
     updateSelectedDay(context, value) {
       context.commit("updateSelectedDay", value);
+    },
+    updateSelectedDayTemp(context, value) {
+      context.commit("updateSelectedDayTemp", value);
     },
     updateSelectedMonth(context, value) {
       context.commit("updateSelectedMonth", value);
     },
+    updateSelectedMonthTemp(context, value) {
+      context.commit("updateSelectedMonthTemp", value);
+    },
     updateSelectedYear(context, value) {
       context.commit("updateSelectedYear", value);
     },
+    updateSelectedYearTemp(context, value) {
+      context.commit("updateSelectedYearTemp", value);
+    },
     updateArchived(context, value) {
       context.commit("updateArchived", value);
+    },
+    updateArchivedTemp(context, value) {
+      context.commit("updateArchivedTemp", value);
     },
     toggleArchivedInDebts(context, value) {
       context.commit("toggleArchivedInDebts", value);
@@ -187,8 +254,14 @@ export default new Vuex.Store({
     updatePosition(context, value) {
       context.commit("updatePosition", value);
     },
+    updatePositionTemp(context, value) {
+      context.commit("updatePositionTemp", value);
+    },
     updatePicture(context, value) {
       context.commit("updatePicture", value);
+    },
+    updatePictureTemp(context, value) {
+      context.commit("updatePictureTemp", value);
     },
     updateCurrentPosition(context, value) {
       context.commit("updateCurrentPosition", value);

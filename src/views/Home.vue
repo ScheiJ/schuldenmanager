@@ -50,7 +50,7 @@
       selectionText: ["Offen", "Archiviert", "Alle"]
     }),
     computed: {
-      ...mapState(["persons", "searchInput", "selectedDebt", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "selectedDay", "selectedMonth", "selectedYear", "archived", "position", "selectedPosition", "settings"]),
+      ...mapState(["persons", "searchInput", "selectedDebt", "selectedPerson", "selectedDebtId", "isPositive", "isPositiveTemp", "amount", "amountTemp", "description", "descriptionTemp", "selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp", "archived", "archivedTemp", "position", "positionTemp", "currentPosition", "settings", "picture", "pictureTemp"]),
       searchInput: {
         get() {
           return this.$store.state.searchInput;
@@ -101,16 +101,26 @@
         this.$store.dispatch('updateSelectedDebtId', 0);
         this.showAllFirst.checked ? this.$store.dispatch("updateSelectedDebt", 2) : this.$store.dispatch("updateSelectedDebt", 0);
         this.$store.dispatch('updateIsPositive', null);
+        this.$store.dispatch('updateIsPositiveTemp', null);
         this.$store.dispatch('updateAmount', "0.00");
+        this.$store.dispatch('updateAmountTemp', "0.00");
         this.$store.dispatch('updateDescription', "");
+        this.$store.dispatch('updateDescriptionTemp', "");
         this.$store.dispatch('updateSelectedDay', new Date().getDate());
+        this.$store.dispatch('updateSelectedDayTemp', new Date().getDate());
         this.$store.dispatch('updateSelectedMonth', new Date().getMonth());
+        this.$store.dispatch('updateSelectedMonthTemp', new Date().getMonth());
         this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
+        this.$store.dispatch('updateSelectedYearTemp', new Date().getFullYear());
         this.$store.dispatch('updateSelectedPerson', "");
+        this.$store.dispatch('updateSelectedPersonTemp', "");
         this.$store.dispatch('updateArchived', false);
+        this.$store.dispatch('updateArchivedTemp', false);
         this.$store.dispatch('updatePosition', {lat:0, lng:0});
+        this.$store.dispatch('updatePositionTemp', {lat:0, lng:0});
         this.$store.dispatch('updateCurrentPosition', {lat:0, lng:0});
         this.$store.dispatch('updatePicture', "");
+        this.$store.dispatch('updatePictureTemp', "");
       },
     }
   }

@@ -13,7 +13,7 @@
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
       <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>Zurück</router-link>
-      <router-link v-if="$route.path === '/date' || $route.path === '/geolocation'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPerson }}</router-link>
+      <router-link v-if="$route.path === '/date' || $route.path === '/geolocation'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonTemp }}</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
@@ -22,7 +22,7 @@
       <v-toolbar-title v-if="$route.path === '/'" class="app-title-font">still waitin</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/settings'">Einstellungen</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/selectPerson'">{{ selectedPersonPageTitle }}</v-toolbar-title>
-      <v-toolbar-title v-if="$route.path === '/modifyDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPerson }}</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/modifyDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPersonTemp }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'">{{ selectedPerson }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/date'" style="color: white; cursor: pointer;">Datum</v-toolbar-title>
 
@@ -33,7 +33,7 @@
       <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgPlus }}</v-icon></router-link>
       <router-link v-if="$route.path === '/settings'" class="routerLink" to="/">Fertig</router-link>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="save">Sichern</v-toolbar-items>
-      <router-link v-if="$route.path === '/finishedDebt'" class="routerLink" to="/modifyDebt">Bearbeiten</router-link>
+      <v-toolbar-items v-if="$route.path === '/finishedDebt'" class="navigationWithFunction" @click="modifyDebt">Bearbeiten</v-toolbar-items>
       <router-link v-if="$route.path === '/date'" class="routerLink" to="/modifyDebt">{{ dateCloseButton }}</router-link>
       <v-toolbar-items v-if="$route.path === '/geolocation'" style="cursor: pointer" @click="saveLocation"><v-icon color="light-blue lighten-2">{{ svgMapMarkerRadius }}</v-icon></v-toolbar-items>
     </v-app-bar>
@@ -62,7 +62,7 @@
     }),
 
     computed: {
-      ...mapState(["debts", "selectedPerson", "selectedDebt", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "dateCloseButton", "selectedDay", "selectedMonth", "selectedYear", "currentPosition", "position", "picture", "settings"])
+      ...mapState(["debts", "selectedPerson", "selectedPersonTemp", "selectedDebt", "selectedDebtId", "isPositive", "isPositiveTemp", "amount", "amountTemp", "description", "descriptionTemp", "archived", "archivedTemp", "selectedPersonPageBack", "selectedPersonPageTitle", "dateCloseButton", "selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp", "position", "positionTemp", "currentPosition", "picture", "pictureTemp", "settings"])
     },
     created() {
       if (this.$workbox) {
@@ -101,34 +101,35 @@
       async save(){
         let newDebt = {
           _id: this.getRandomString(24),
-          person: this.selectedPerson,
-          isPositive: this.isPositive===false ? false : true,
-          amount: this.amount,
-          description: this.description,
+          person: this.selectedPersonTemp,
+          isPositive: this.isPositiveTemp===false ? false : true,
+          amount: this.amountTemp,
+          description: this.descriptionTemp,
           archived: false,
-          date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10),
-          position: this.position,
+          date: new Date(this.selectedYearTemp, this.selectedMonthTemp, Number(this.selectedDayTemp)+1).toISOString().substr(0, 10),
+          position: this.positionTemp,
           picture: ""
         }
-        if(this.picture) {
-          if(typeof this.picture !== 'string') {
-            let imageData = await addImage(this.picture);
+        if(this.pictureTemp) {
+          if(typeof this.pictureTemp !== 'string') {
+            let imageData = await addImage(this.pictureTemp);
             let imageName = imageData.data.imageName;
             newDebt.picture = imageName;
             this.$store.dispatch("updatePicture", imageName);
-          } else newDebt.picture = this.picture;
+          } else newDebt.picture = this.pictureTemp;
         }
         let currentDebts = this.debts;
         // Überprüfen, ob Neu oder Bearbeiten anhand der ID
         if(this.selectedDebtId) {
           // ID gesetzt -> Update der ID
           newDebt._id = this.selectedDebtId;
-          newDebt.archived = this.archived;
+          newDebt.archived = this.archivedTemp;
           await updateDebt(newDebt)
           let indexToDelete = this.debts.findIndex(debt => {
             return debt._id === this.selectedDebtId;
           });
           currentDebts.splice(indexToDelete, 1);
+          this.setFinishedVars();
         } else {
           // Keine ID gesetzt -> Neuer Debt
           await addDebt(newDebt);
@@ -142,7 +143,19 @@
         this.selectedDebtId === 0 ? this.$router.push('/') : this.$router.push('/finishedDebt');
       },
       saveLocation() {
-        this.$store.dispatch("updatePosition", this.currentPosition);
+        this.$store.dispatch("updatePositionTemp", this.currentPosition);
+      },
+      setFinishedVars() {
+        this.$store.dispatch('updateSelectedPerson', this.selectedPersonTemp);
+        this.$store.dispatch('updateIsPositive', this.isPositiveTemp);
+        this.$store.dispatch('updateAmount', this.amountTemp);
+        this.$store.dispatch('updateDescription', this.descriptionTemp);
+        this.$store.dispatch('updateSelectedDay', this.selectedDayTemp);
+        this.$store.dispatch('updateSelectedMonth', this.selectedMonthTemp);
+        this.$store.dispatch('updateSelectedYear', this.selectedYearTemp);
+        this.$store.dispatch('updateArchived', this.archivedTemp);
+        this.$store.dispatch('updatePosition', this.positionTemp);
+        this.$store.dispatch('updatePicture', this.pictureTemp);
       },
       getRandomString(length) {
         let chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -156,14 +169,27 @@
       },
       updateHeadingSelectPerson() {
         this.$store.dispatch('updateSelectedPersonPageTitle', 'Bearbeiten');
-        this.$store.dispatch('updateSelectedPersonPageBack', this.selectedPerson);
+        this.$store.dispatch('updateSelectedPersonPageBack', this.selectedPersonTemp);
         this.$router.push('/selectPerson');
       },
       resetHeadingSelectPerson() {
         this.$store.dispatch('updateSelectedPersonPageTitle', 'Neu');
         this.$store.dispatch('updateSelectedPersonPageBack', "Zurück");
-        this.$store.dispatch('updateSelectedPerson', "");
+        this.$store.dispatch('updateSelectedPersonTemp', "");
         this.selectedDebtId === 0 ? this.$router.push('/') : this.$router.push('/finishedDebt');
+      },
+      modifyDebt() {
+        this.$store.dispatch("updateSelectedPersonTemp", this.selectedPerson);
+        this.$store.dispatch("updateIsPositiveTemp", this.isPositive);
+        this.$store.dispatch("updateAmountTemp", this.amount);
+        this.$store.dispatch("updateDescriptionTemp", this.description);
+        this.$store.dispatch('updateSelectedDayTemp', this.selectedDay);
+        this.$store.dispatch('updateSelectedMonthTemp', this.selectedMonth);
+        this.$store.dispatch('updateSelectedYearTemp', this.selectedYear);
+        this.$store.dispatch('updateArchivedTemp', this.archived);
+        this.$store.dispatch('updatePositionTemp', this.position);
+        this.$store.dispatch('updatePictureTemp', this.picture);
+        this.$router.push('/modifyDebt');
       }
     }
   };

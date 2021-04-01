@@ -8,8 +8,8 @@
             color="#37474F"
             @click="takePicture"
             >
-                <v-card-text v-if="!picture" style="color: #4FC3F7" class="text-center">Foto aufnehmen</v-card-text>
-                <v-card-text v-if="picture" style="color: #4FC3F7; line-height: 1.2" class="text-center">Neues Foto aufnehmen</v-card-text>
+                <v-card-text v-if="!pictureTemp" style="color: #4FC3F7" class="text-center">Foto aufnehmen</v-card-text>
+                <v-card-text v-if="pictureTemp" style="color: #4FC3F7; line-height: 1.2" class="text-center">Neues Foto aufnehmen</v-card-text>
             </v-card>
         </v-col>
         <v-col cols="2">
@@ -20,8 +20,8 @@
             color="#37474F"
             @click="$refs.upload.click()"
             >
-                <v-card-text v-if="!picture" style="color: #4FC3F7" class="text-center">Foto auswählen</v-card-text>
-                <v-card-text v-if="picture" style="color: #4FC3F7; line-height: 1.2" class="text-center">Neue Foto auswählen</v-card-text>
+                <v-card-text v-if="!pictureTemp" style="color: #4FC3F7" class="text-center">Foto auswählen</v-card-text>
+                <v-card-text v-if="pictureTemp" style="color: #4FC3F7; line-height: 1.2" class="text-center">Neue Foto auswählen</v-card-text>
                 <input v-show="false" ref="upload" type="file" name="image" @change="selectPicture"/>
             </v-card>
         </v-col>
@@ -37,7 +37,7 @@
             </v-card>
         </v-col>
         <v-col cols="1">
-            <v-icon class="mt-2" @click="resetShowImageSelection" v-model="picture" color="light-blue lighten-2">{{ svgClose }}</v-icon>
+            <v-icon class="mt-2" @click="resetShowImageSelection" color="light-blue lighten-2">{{ svgClose }}</v-icon>
         </v-col>
     </v-row>
 </template>
@@ -53,7 +53,7 @@ export default {
       }
     },
     computed: {
-      ...mapState(["showImageSelection", "picture"])
+      ...mapState(["showImageSelection", "pictureTemp"])
     },
     methods: {
         resetShowImageSelection() {
@@ -67,11 +67,11 @@ export default {
             const file = event.target.files[0]
             let fd = new FormData();
             fd.append('image', file, file.name)
-            this.$store.dispatch("updatePicture", fd);
+            this.$store.dispatch("updatePictureTemp", fd);
             this.resetShowImageSelection();
         },
         deletePicture() {
-            this.$store.dispatch('updatePicture', "");
+            this.$store.dispatch('updatePictureTemp', "");
             this.resetShowImageSelection();
         }
     }
