@@ -25,7 +25,7 @@
                 <input v-show="false" ref="upload" type="file" name="image" @change="selectPicture"/>
             </v-card>
         </v-col>
-        <v-col cols="2" v-if="picture">
+        <v-col cols="2" v-if="pictureTemp">
             <v-card
             class="d-flex align-center"
             height="40px"

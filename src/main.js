@@ -4,13 +4,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
-import * as VueGoogleMaps from 'vue2-google-maps';
-
-Vue.use(VueGoogleMaps, {
-    load: {
-        key: 'AIzaSyAvw2-EXN9KDOly2VBWkctz1T6izuYXC2k'   
-    },
-})
+import { VueGoogleMaps } from './plugins/vue-google-maps';
 
 Vue.config.productionTip = false
 
@@ -18,5 +12,6 @@ new Vue({
   router,
   store,
   vuetify,
+  VueGoogleMaps,
   render: h => h(App)
 }).$mount('#app')

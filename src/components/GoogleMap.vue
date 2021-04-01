@@ -22,7 +22,7 @@ export default {
     created() {
         let positionHelper = this.$router.path === '/geolocation' ? this.positionTemp : this.position;
 
-        if (!positionHelper.lat && !positionHelper) {
+        if (!positionHelper.lat && !positionHelper.lng) {
             VueGeolocation.getLocation({})
             .then(coordinates => {
                 this.$store.dispatch("updateCurrentPosition", coordinates);

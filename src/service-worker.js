@@ -33,6 +33,32 @@ workbox.routing.registerRoute(
 );
 
 workbox.routing.registerRoute(
+    new RegExp("https://maps.(?:googleapis|gstatic).com/(.*)"),
+    new workbox.strategies.NetworkFirst({
+        cacheName: "maps",
+        plugins: [
+            new workbox.expiration.Plugin({
+                maxEntries: 10
+            })
+        ],
+        method: "GET",
+    })
+);
+
+workbox.routing.registerRoute(
+    new RegExp("http://127.0.0.1:8000/image/(.*)"),
+    new workbox.strategies.NetworkFirst({
+        cacheName: "pictures",
+        plugins: [
+            new workbox.expiration.Plugin({
+                maxEntries: 10
+            })
+        ],
+        method: "GET",
+    })
+);
+
+workbox.routing.registerRoute(
     new RegExp('http://localhost:8000/(.*)'),
     new workbox.strategies.NetworkFirst({
         cacheName: 'api',

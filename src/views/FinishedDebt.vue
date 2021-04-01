@@ -129,7 +129,6 @@ export default {
             id: this.selectedDebtId,
           }); 
           let indexToToggleArchived = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
-          console.log(indexToToggleArchived)
           this.$store.dispatch("toggleArchivedInDebts", indexToToggleArchived);
           this.$router.push("/");
       },

@@ -14,7 +14,7 @@
                   <v-list-item-subtitle>{{ getNormalFormat(debt.date) }}</v-list-item-subtitle>
                   <v-list-item-title>{{ debt.description }}</v-list-item-title>
                 </v-list-item-content>
-                <v-list-item-icon>
+                <v-list-item-icon v-bind:style="debt.archived ? 'color: grey' : 'color: black'">
                   {{ debt.amount.$numberDecimal.replace(".", ",") }} €
                   <v-icon
                   class="ml-3"

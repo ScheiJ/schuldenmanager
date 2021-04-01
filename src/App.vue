@@ -155,7 +155,6 @@
         this.$store.dispatch('updateSelectedYear', this.selectedYearTemp);
         this.$store.dispatch('updateArchived', this.archivedTemp);
         this.$store.dispatch('updatePosition', this.positionTemp);
-        this.$store.dispatch('updatePicture', this.pictureTemp);
       },
       getRandomString(length) {
         let chars = "abcdefghijklmnopqrstuvwxyz0123456789";
