@@ -55,50 +55,54 @@
             <v-list-item-icon>
               <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-content @click="overlay = !overlay">
+            <v-list-item-content @click="sheet = !sheet">
                 <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
                 <v-list-item-title v-if="archived === true" style="color: #4FC3F7">Löschen</v-list-item-title>
             </v-list-item-content>
-            <v-overlay
-            :absolute="absolute"
-            :opacity="opacity"
-            :value="overlay"
-            >
-              <v-row justify="space-around">
-                  <v-col>
-                      <v-card
-                      class="d-flex align-center mx-auto"
-                      height="40px"
-                      style="border: 1px solid #4FC3F7"
-                      @click="toggleArchive"
-                      >
-                      <v-card-text v-if="!archived" style="color: #4FC3F7" class="text-center">Archivieren</v-card-text>
-                      <v-card-text v-if="archived" style="color: #4FC3F7; line-height: 1.2;" class="text-center">Als offen markieren</v-card-text>
-                      </v-card>
-                  </v-col>
-                  <v-col>
-                      <v-card
-                      class="d-flex align-center mx-auto"
-                      height="40px"
-                      style="border: 1px solid #4FC3F7"
-                      @click="deleteThisDebt"
-                      >
-                      <v-card-text style="color: #4FC3F7" class="text-center">Löschen</v-card-text>
-                      </v-card>
-                  </v-col>
-                  <v-col>
-                      <v-icon @click="overlay = false" class="mt-2" color="light-blue lighten-2">{{ svgClose }}</v-icon>
-                  </v-col>
-              </v-row>
-            </v-overlay>
           </v-list-item>
       </v-col>
+      <v-bottom-sheet v-model="sheet" inset>
+        <v-sheet
+          class="text-center"
+          height="180px"
+          style="background-color: #37474F"
+        >
+          <v-card
+          class="d-flex align-center mx-auto"
+          height="60px"
+          style="background-color: #37474F"
+          flat
+          @click="toggleArchive"
+          >
+            <v-card-text v-if="!archived" style="color: #4FC3F7" class="text-center">Archivieren</v-card-text>
+            <v-card-text v-if="archived" style="color: #4FC3F7;" class="text-center"><b>Als offen markieren</b></v-card-text>
+          </v-card>
+          <v-card
+          flat
+          class="d-flex align-center mx-auto"
+          height="60px"
+          style="background-color: #37474F; border-top: 1px solid #4FC3F7; border-bottom: 1px solid #4FC3F7"
+          @click="deleteThisDebt"
+          >
+            <v-card-text style="color: #4FC3F7" class="text-center">Löschen</v-card-text>
+          </v-card>
+          <v-card
+          class="d-flex align-center mx-auto"
+          height="60px"
+          style="background-color: #37474F"
+          flat
+          @click="sheet = !sheet"
+          >
+            <v-card-text style="color: #4FC3F7;" class="text-center">Abbrechen</v-card-text>
+          </v-card>
+        </v-sheet>
+      </v-bottom-sheet>
     </v-row>
   </div>
 </template>
 
 <script>
-import { mdiCheck, mdiTrashCanOutline, mdiClose } from '@mdi/js';
+import { mdiCheck, mdiTrashCanOutline } from '@mdi/js';
 import { toggleArchiveDebt, deleteDebt } from "@/services/DebtsService";
 import { mapState } from "vuex";
 import modifyLocalDebtsMixin from "../mixins/modifyLocalDebtsMixin";
@@ -109,10 +113,9 @@ export default {
     return {
       svgCheck: mdiCheck,
       svgTrashCanOutline: mdiTrashCanOutline,
-      svgClose: mdiClose,
-      absolute: true,
       opacity: 1,
       overlay: false,
+      sheet: false
     }
   },
   mixins: [modifyLocalDebtsMixin, getFullDateMixin],

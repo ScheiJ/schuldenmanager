@@ -112,8 +112,16 @@
         }
         if(this.pictureTemp) {
           if(typeof this.pictureTemp !== 'string') {
-            let imageData = await addImage(this.pictureTemp);
-            let imageName = imageData.data.imageName;
+            if(!navigator.onLine) {
+              const reader = new FileReader();
+              reader.addEventListener('load', () => {
+                localStorage.setItem(this.pictureTemp.get('image').name, reader.result);
+              })
+              reader.readAsDataURL(this.pictureTemp.get('image'));
+            }
+            await addImage(this.pictureTemp);
+            let image = this.pictureTemp.get('image');
+            let imageName = image.name
             newDebt.picture = imageName;
             this.$store.dispatch("updatePicture", imageName);
           } else newDebt.picture = this.pictureTemp;
@@ -155,6 +163,7 @@
         this.$store.dispatch('updateSelectedYear', this.selectedYearTemp);
         this.$store.dispatch('updateArchived', this.archivedTemp);
         this.$store.dispatch('updatePosition', this.positionTemp);
+        if(typeof this.pictureTemp === 'string') this.$store.dispatch('updatePicture', this.pictureTemp);
       },
       getRandomString(length) {
         let chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -187,7 +196,7 @@
         this.$store.dispatch('updateSelectedYearTemp', this.selectedYear);
         this.$store.dispatch('updateArchivedTemp', this.archived);
         this.$store.dispatch('updatePositionTemp', this.position);
-        this.$store.dispatch('updatePictureTemp', this.picture);
+        this.$store.dispatch('updatePictureTemp', this.picture)
         this.$router.push('/modifyDebt');
       }
     }

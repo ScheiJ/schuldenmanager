@@ -133,7 +133,7 @@ export default {
 
             const formData = new FormData();
             canvas.toBlob(function(blob) {
-                let file = new File([blob], "ownImage.png")
+                let file = new File([blob], Date.now()+ '_' + "ownImage.png")
 
                 formData.append('image', file, file.name);
             });

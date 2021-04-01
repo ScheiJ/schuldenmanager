@@ -2,36 +2,36 @@
   <div>
     <v-row>
         <v-col cols="1" class="mt-5 ml-3 mr-0 pb-0">
-            <div v-if="!archivedTemp" class="circleBig" @click="turnAround" v-bind:class="{ turnGreen: isPositiveTemp, turnRed: isPositiveTemp === false}"></div>
-            <v-icon v-if="archivedTemp">{{ svgCheck }}</v-icon>
+          <div v-if="!archivedTemp" class="circleBig" @click="turnAround" v-bind:class="{ turnGreen: isPositiveTemp, turnRed: isPositiveTemp === false}"></div>
+          <v-icon v-if="archivedTemp">{{ svgCheck }}</v-icon>
         </v-col>
         <v-col class="mt-3 ml-3 pb-0">
           <vuetify-money
-            v-model="amountTemp"
-            v-bind:placeholder="placeholder"
-            v-bind:readonly="readonly"
-            v-bind:disabled="disabled"
-            v-bind:outlined="outlined"
-            v-bind:clearable="clearable"
-            v-bind:valueWhenIsEmpty="valueWhenIsEmpty"
-            v-bind:options="options"
-            v-bind:properties="properties"
-            class="centered-input"
+          v-model="amountTemp"
+          v-bind:placeholder="placeholder"
+          v-bind:readonly="readonly"
+          v-bind:disabled="disabled"
+          v-bind:outlined="outlined"
+          v-bind:clearable="clearable"
+          v-bind:valueWhenIsEmpty="valueWhenIsEmpty"
+          v-bind:options="options"
+          v-bind:properties="properties"
+          class="centered-input"
           />
         </v-col>
         <v-col class="mt-3 col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pb-0">
-            <v-text-field
-            @click="$router.push('/date')"
-            type="text"
-            solo
-            flat
-            single-line
-            filled
-            readonly
-            background-color="#EEEEEE"
-            v-model="selectedDate"
-            class="pl-1"
-            ></v-text-field>
+          <v-text-field
+          @click="$router.push('/date')"
+          type="text"
+          solo
+          flat
+          single-line
+          filled
+          readonly
+          background-color="#EEEEEE"
+          v-model="selectedDate"
+          class="pl-1"
+          ></v-text-field>
         </v-col>
     </v-row>
     <v-row>
@@ -60,14 +60,61 @@
           <br>
           <v-btn
           v-bind:style="this.pictureTemp ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
-          @click="$store.dispatch('updateShowImageSelection', true)"
+          @click="sheet = true"
           depressed
           color="#ffffff"
           class="ml-4"
           ><v-icon>{{ svgCamera }}</v-icon></v-btn>
       </v-col>
     </v-row>
-    <ImageSelection v-if="showImageSelection" />
+    <v-bottom-sheet inset v-model="sheet">
+      <v-sheet
+      class="text-center"
+      v-bind:height="pictureTemp ? '240px' : '180px'"
+      style="background-color: #37474F"
+      >
+        <v-card
+        class="d-flex align-center mx-auto"
+        height="60px"
+        style="background-color: #37474F"
+        flat
+        @click="takePicture"
+        >  
+          <v-card-text v-if="!pictureTemp" style="color: #4FC3F7" class="text-center">Foto aufnehmen</v-card-text>
+          <v-card-text v-if="pictureTemp" style="color: #4FC3F7;" class="text-center">Neues Foto aufnehmen</v-card-text>
+        </v-card>
+        <v-card
+        flat
+        class="d-flex align-center mx-auto"
+        height="60px"
+        style="background-color: #37474F; border-top: 1px solid #4FC3F7; border-bottom: 1px solid #4FC3F7"
+        @click="$refs.upload.click()"
+        >
+          <v-card-text v-if="!pictureTemp" style="color: #4FC3F7" class="text-center">Foto auswählen</v-card-text>
+          <v-card-text v-if="pictureTemp" style="color: #4FC3F7;" class="text-center">Neues Foto auswählen</v-card-text>
+          <input v-show="false" ref="upload" type="file" name="image" @change="selectPicture"/>
+        </v-card>
+        <v-card
+        class="d-flex align-center mx-auto"
+        height="60px"
+        style="background-color: #37474F; border-bottom: 1px solid #4FC3F7"
+        flat
+        v-if="pictureTemp"
+        @click="deletePicture"
+        >
+          <v-card-text style="color: red" class="text-center">Foto löschen</v-card-text>
+        </v-card>
+        <v-card
+        class="d-flex align-center mx-auto"
+        height="60px"
+        style="background-color: #37474F;"
+        flat
+        @click="sheet = false"
+        >
+          <v-card-text style="color: #4FC3F7;" class="text-center">Abbrechen</v-card-text>
+        </v-card>
+      </v-sheet>
+    </v-bottom-sheet>
   </div>
 </template>
 
@@ -79,11 +126,9 @@
   export default {
     name: 'ModifyDebt',
     mixins: [getFullDateMixin],
-    components: {
-      ImageSelection: () => import('@/components/ImageSelection.vue')
-    },
     data: () => {
       return {
+        sheet: false,
         svgCheck: mdiCheck,
         svgMap: mdiMap,
         svgCamera: mdiCamera,
@@ -108,7 +153,7 @@
       }
     },
     computed: {
-      ...mapState(["isPositiveTemp", "amountTemp", "descriptionTemp", "archivedTemp", "positionTemp", "pictureTemp", "showImageSelection"]),
+      ...mapState(["isPositiveTemp", "amountTemp", "descriptionTemp", "archivedTemp", "positionTemp", "pictureTemp"]),
       amountTemp: {
         get() {
           return this.$store.state.amountTemp;
@@ -131,6 +176,21 @@
           if(this.isPositiveTemp === null) this.$store.dispatch("updateIsPositiveTemp", false);
           else this.$store.dispatch("updateIsPositiveTemp", !this.isPositiveTemp);
       },
+      takePicture() {
+        this.sheet = false;
+        this.$router.push('/camera');
+      },
+      selectPicture(event) {
+        const file = event.target.files[0]
+        let fd = new FormData();
+        fd.append('image', file, Date.now() + '_' + file.name)
+        this.$store.dispatch("updatePictureTemp", fd);
+        this.sheet = false;
+      },
+      deletePicture() {
+        this.$store.dispatch('updatePictureTemp', "");
+        this.sheet = false;
+      }
     }
   }
 </script>

@@ -59,8 +59,7 @@ export default new Vuex.Store({
     positionTemp: {
       lat: 0,
       lng: 0
-    },
-    showImageSelection: false
+    }
   },
   mutations: {
     updateSettings(state, value) {
@@ -161,10 +160,7 @@ export default new Vuex.Store({
     },
     updateCurrentPosition(state, value) {
       state.currentPosition = value;
-    },
-    updateShowImageSelection(state, value) {
-      state.showImageSelection = value;
-    },
+    }
   },
   actions: {
     updateSettings(context, value) {
@@ -265,9 +261,6 @@ export default new Vuex.Store({
     },
     updateCurrentPosition(context, value) {
       context.commit("updateCurrentPosition", value);
-    },
-    updateShowImageSelection(context, value) {
-      context.commit("updateShowImageSelection", value);
     }
   }
 })
