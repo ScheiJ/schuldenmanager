@@ -4,7 +4,7 @@
             <GoogleMap />
         </v-row>
         <v-row>
-            <DeleteGeolocation v-if="position.lat && position.lng" />
+            <DeleteGeolocation v-if="position.lat || position.lng" />
         </v-row>
     </div>
 </template>

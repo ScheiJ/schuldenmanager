@@ -33,10 +33,15 @@ export default new Router({
       name: 'Date',
       component: () => import('./views/Date.vue')
     },
-     {
+    {
       path: '/geolocation',
       name: 'Geolocation',
       component: () => import('./views/Geolocation.vue')
+    },
+    {
+      path: '/camera',
+      name: 'Camera',
+      component: () => import('./views/Camera.vue')
     },
     {
       path: '/finishedDebt',

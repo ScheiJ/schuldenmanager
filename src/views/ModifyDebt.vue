@@ -51,7 +51,7 @@
       </v-col>
       <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pt-0">
           <v-btn
-          v-bind:style="(this.position.lat && this.position.lng) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
+          v-bind:style="(this.position.lat || this.position.lng) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
           @click="$router.push('/geolocation')"
           depressed
           color="#ffffff"
@@ -59,12 +59,15 @@
           ><v-icon>{{ svgMap }}</v-icon></v-btn>
           <br>
           <v-btn
+          v-bind:style="this.picture ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
+          @click="$store.dispatch('updateShowImageSelection', true)"
           depressed
           color="#ffffff"
           class="ml-4"
           ><v-icon>{{ svgCamera }}</v-icon></v-btn>
       </v-col>
     </v-row>
+    <ImageSelection v-if="showImageSelection" />
   </div>
 </template>
 
@@ -76,6 +79,9 @@
   export default {
     name: 'ModifyDebt',
     mixins: [getFullDateMixin],
+    components: {
+      ImageSelection: () => import('@/components/ImageSelection.vue')
+    },
     data: () => {
       return {
         svgCheck: mdiCheck,
@@ -102,7 +108,7 @@
       }
     },
     computed: {
-      ...mapState(["isPositive", "amount", "description", "archived", "position"]),
+      ...mapState(["isPositive", "amount", "description", "archived", "position", "picture", "showImageSelection"]),
       amount: {
         get() {
           return this.$store.state.amount;

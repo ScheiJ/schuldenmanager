@@ -63,6 +63,7 @@ export default {
         this.$store.dispatch("updateSelectedYear", parseInt(debtDate.substr(0, 4)));
         this.$store.dispatch("updateArchived", debt.archived);
         this.$store.dispatch("updatePosition", debt.position);
+        this.$store.dispatch("updatePicture", debt.picture);
         this.$router.push('finishedDebt');
       },
   }

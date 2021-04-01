@@ -41,11 +41,12 @@
         <v-col cols="1" class="ml-3 mr-0 pt-0">
         </v-col>
     </v-row>
-    <v-row class="pb-0">
-      <v-col>
+    <v-row v-if="position.lat || position.lng || picture">
+      <v-col v-if="position.lat || position.lng" style="height: 37vh;">
         <GoogleMap />
       </v-col>
-      <v-col>
+      <v-col v-if="picture" style="height: 33vh;">
+        <Picture />
       </v-col>
     </v-row>
     <v-row>
@@ -116,10 +117,11 @@ export default {
   },
   mixins: [modifyLocalDebtsMixin, getFullDateMixin],
   computed: {
-    ...mapState(["debts", "selectedDebtId", "isPositive", "amount", "description", "archived", "position"])
+    ...mapState(["debts", "selectedDebtId", "isPositive", "amount", "description", "archived", "position", "picture"])
   },
   components: {
     GoogleMap: () => import('@/components/GoogleMap.vue'),
+    Picture: () => import('@/components/Picture.vue'),
   },
   methods: {
       async toggleArchive() {
@@ -127,6 +129,7 @@ export default {
             id: this.selectedDebtId,
           }); 
           let indexToToggleArchived = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
+          console.log(indexToToggleArchived)
           this.$store.dispatch("toggleArchivedInDebts", indexToToggleArchived);
           this.$router.push("/");
       },

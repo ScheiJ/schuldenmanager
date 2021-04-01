@@ -48,7 +48,7 @@
 
 <script>
   import { mdiLessThan, mdiPlus, mdiMenu, mdiMapMarkerRadius } from '@mdi/js';
-  import { fetchAllDebts, addDebt, updateDebt } from "@/services/DebtsService";
+  import { fetchAllDebts, addDebt, updateDebt, addImage } from "@/services/DebtsService";
   import { fetchSettings } from "@/services/SettingsService";
   import { mapState } from "vuex";
   export default {
@@ -62,7 +62,7 @@
     }),
 
     computed: {
-      ...mapState(["debts", "selectedPerson", "selectedDebt", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "dateCloseButton", "selectedDay", "selectedMonth", "selectedYear", "currentPosition", "position", "settings"])
+      ...mapState(["debts", "selectedPerson", "selectedDebt", "selectedDebtId", "isPositive", "amount", "description", "archived", "selectedPersonPageBack", "selectedPersonPageTitle", "dateCloseButton", "selectedDay", "selectedMonth", "selectedYear", "currentPosition", "position", "picture", "settings"])
     },
     created() {
       if (this.$workbox) {
@@ -107,7 +107,16 @@
           description: this.description,
           archived: false,
           date: new Date(this.selectedYear, this.selectedMonth, Number(this.selectedDay)+1).toISOString().substr(0, 10),
-          position: this.position
+          position: this.position,
+          picture: ""
+        }
+        if(this.picture) {
+          if(typeof this.picture !== 'string') {
+            let imageData = await addImage(this.picture);
+            let imageName = imageData.data.imageName;
+            newDebt.picture = imageName;
+            this.$store.dispatch("updatePicture", imageName);
+          } else newDebt.picture = this.picture;
         }
         let currentDebts = this.debts;
         // Überprüfen, ob Neu oder Bearbeiten anhand der ID
@@ -122,7 +131,7 @@
           currentDebts.splice(indexToDelete, 1);
         } else {
           // Keine ID gesetzt -> Neuer Debt
-          await addDebt(newDebt)
+          await addDebt(newDebt);
         }
         newDebt.amount = {
           $numberDecimal: newDebt.amount

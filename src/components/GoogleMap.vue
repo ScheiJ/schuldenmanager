@@ -2,9 +2,8 @@
     <GmapMap
     :center="currentPosition"
     :zoom="7"
-    map-type-id="terrain"
     style="width: 100%;"
-    v-bind:style="(this.position.lat && this.position.lng && $route.path === '/geolocation')  ? 'height: 84vh;' : ($route.path === '/finishedDebt') ? 'height: 30vh;' : 'height: 92vh;'"
+    v-bind:style="((this.position.lat || this.position.lng) && $route.path === '/geolocation')  ? 'height: 84vh;' : ($route.path === '/finishedDebt') ? 'height: 30vh;' : 'height: 92vh;'"
     >
         <GmapMarker
             :position="currentPosition"

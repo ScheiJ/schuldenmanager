@@ -4,7 +4,7 @@ const fetchAllDebts = () => {
   return Api().get("debts");
 };
 
-const addDebt = (params) => {
+const addDebt = async (params) => {
   return Api().post("debt", params).catch(err => responseNetworkErrorDuringOffline(err));
 };
 
@@ -20,4 +20,8 @@ const deleteDebt = (id) => {
   return Api().delete("debt/" + id).catch(err => responseNetworkErrorDuringOffline(err));
 };
 
-export { fetchAllDebts, addDebt, updateDebt, toggleArchiveDebt, deleteDebt }
+const addImage = (params) => {
+  return Api().post("image", params).catch(err => responseNetworkErrorDuringOffline(err));
+};
+
+export { fetchAllDebts, addDebt, updateDebt, toggleArchiveDebt, deleteDebt, addImage }

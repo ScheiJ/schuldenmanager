@@ -38,6 +38,7 @@ export default new Vuex.Store({
     selectedMonth: new Date().getMonth()+1,
     selectedYear: new Date().getFullYear(),
     archived: false,
+    picture: "",
     currentPosition: {
       lat: 0,
       lng: 0
@@ -45,7 +46,8 @@ export default new Vuex.Store({
     position: {
       lat: 0,
       lng: 0
-    }
+    },
+    showImageSelection: false
   },
   mutations: {
     updateSettings(state, value) {
@@ -100,7 +102,7 @@ export default new Vuex.Store({
       state.archived = value;
     },
     toggleArchivedInDebts(state, value) {
-      state.debts[value].archived = !state.debts[value].archive;
+      state.debts[value].archived = !state.debts[value].archived;
     },
     deleteDebt(state, value) {
       state.debts.splice(value, 1);
@@ -111,9 +113,15 @@ export default new Vuex.Store({
     updatePosition(state, value) {
       state.position = value;
     },
+    updatePicture(state, value) {
+      state.picture = value;
+    },
     updateCurrentPosition(state, value) {
       state.currentPosition = value;
-    }
+    },
+    updateShowImageSelection(state, value) {
+      state.showImageSelection = value;
+    },
   },
   actions: {
     updateSettings(context, value) {
@@ -179,8 +187,14 @@ export default new Vuex.Store({
     updatePosition(context, value) {
       context.commit("updatePosition", value);
     },
+    updatePicture(context, value) {
+      context.commit("updatePicture", value);
+    },
     updateCurrentPosition(context, value) {
       context.commit("updateCurrentPosition", value);
+    },
+    updateShowImageSelection(context, value) {
+      context.commit("updateShowImageSelection", value);
     }
   }
 })
