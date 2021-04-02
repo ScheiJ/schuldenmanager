@@ -50,17 +50,27 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pa-0">
+      <v-list>
         <v-list-item style="background-color: #37474F; position: fixed; bottom: 0; width: 100%">
-            <v-list-item-icon>
-              <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content @click="sheet = !sheet">
-                <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
-                <v-list-item-title v-if="archived === true" style="color: #4FC3F7">Löschen</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-      </v-col>
+          <v-list-item-icon>
+            <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+              <v-list-item-title style="color: #4FC3F7">Erinnerung</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item style="background-color: #37474F; position: fixed; bottom: 0; width: 100%">
+          <v-list-item-icon>
+            <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content @click="sheet = !sheet">
+              <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
+              <v-list-item-title v-if="archived === true" style="color: #4FC3F7">Löschen</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-row>
+    <v-row>
       <v-bottom-sheet v-model="sheet" inset>
         <v-sheet
           class="text-center"
