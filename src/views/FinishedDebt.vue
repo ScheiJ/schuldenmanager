@@ -50,7 +50,7 @@
       </v-col>
     </v-row>
     <v-row style="position: fixed; bottom: 0; width: 100%" class="pb-3">
-      <v-list-item style="background-color: #37474F;">
+      <v-list-item @click="share" style="background-color: #37474F;">
         <v-list-item-icon>
           <v-icon color="#4FC3F7">{{ svgExportVariant }}</v-icon>
         </v-list-item-icon>
@@ -139,7 +139,7 @@ export default {
   },
   mixins: [modifyLocalDebtsMixin, getDayAndMonthMixin],
   computed: {
-    ...mapState(["debts", "selectedDebtId", "isPositive", "amount", "description", "archived", "position", "picture", "selectedDay", "selectedMonth", "selectedYear", "selectedDayReminder", "selectedMonthReminder", "selectedYearReminder", "timeReminder", "reminderSet"]),
+    ...mapState(["debts", "selectedPerson", "selectedDebtId", "isPositive", "amount", "description", "archived", "position", "picture", "selectedDay", "selectedMonth", "selectedYear", "selectedDayReminder", "selectedMonthReminder", "selectedYearReminder", "timeReminder", "reminderSet"]),
     windowHeight() {
       return window.innerHeight;
     },
@@ -165,7 +165,18 @@ export default {
       let indexToDelete = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
       this.$store.dispatch("deleteDebt", indexToDelete);
       this.$router.push("/");
-    }
+    },
+    share() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Kurze Erinnerung',
+          text: 'Hi ' + this.selectedPerson + ", \neine kleine Erinnerung.\nDu schuldest mir noch " + this.amount + " € vom " + this.selectedDay + "." + this.selectedMonth + "." + this.selectedYear + ".\n '" + this.description + "'",
+          url: 'https://127.0.0.1/',
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
+    },
   }
 }
 </script>

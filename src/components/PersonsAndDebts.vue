@@ -58,8 +58,12 @@ export default {
         this.$store.dispatch("updatePosition", debt.position);
         this.$store.dispatch("updatePicture", debt.picture);
         if(debt.reminder) {
-          let reminderDate = new Date(debt.reminder)        
-          this.$store.dispatch('updateTimeReminder', reminderDate.getHours() + ':' + reminderDate.getMinutes());
+          let reminderDate = new Date(debt.reminder);
+          let hours = reminderDate.getHours().toString();
+          hours = hours.length === 1 ? '0' + hours : hours; 
+          let minutes = reminderDate.getMinutes().toString();
+          minutes = minutes.length === 1 ? '0' + minutes : minutes;
+          this.$store.dispatch('updateTimeReminder', hours + ':' + minutes);
           this.$store.dispatch('updateSelectedDayReminder', reminderDate.getDate());
           this.$store.dispatch('updateSelectedMonthReminder', reminderDate.getMonth());
           this.$store.dispatch('updateSelectedYearReminder', reminderDate.getFullYear());
