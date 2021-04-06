@@ -11,7 +11,7 @@
                     <v-icon v-if="debt.archived">{{ svgCheck }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-subtitle>{{ getNormalFormat(debt.date) }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ getNormalFormat(debt.date) }}<v-icon v-if="debt.reminder" class="ml-2">{{ svgClockTimeFour }}</v-icon></v-list-item-subtitle>
                   <v-list-item-title>{{ debt.description }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-icon v-bind:style="debt.archived ? 'color: grey' : 'color: black'">
@@ -30,27 +30,20 @@
 </template>
 
 <script>
-import { mdiCheck, mdiGreaterThan } from '@mdi/js';
+import { mdiCheck, mdiGreaterThan, mdiClockTimeFour } from '@mdi/js';
 import getAmountOfPersonMixin from "../mixins/getAmountOfPersonMixin";
 import filterDebtsMixin from "../mixins/filterDebtsMixin";
 import filterPersonsMixin from "../mixins/filterPersonsMixin";
+import getFullNormalDateMixin from "../mixins/getFullNormalDateMixin";
 export default {
   name: "PersonsAndDebts",
-  mixins: [getAmountOfPersonMixin, filterDebtsMixin, filterPersonsMixin],
+  mixins: [getAmountOfPersonMixin, filterDebtsMixin, filterPersonsMixin, getFullNormalDateMixin],
   data: () => ({
     svgCheck: mdiCheck,
-    svgGreaterThan: mdiGreaterThan
+    svgGreaterThan: mdiGreaterThan,
+    svgClockTimeFour: mdiClockTimeFour
   }),
   methods: {
-      getNormalFormat(date){
-        let newDate = new Date(date);
-        let year = newDate.getFullYear();
-        let month = newDate.getMonth()+1;
-        if (month.toString().length === 1) month = "0" + month;
-        let day = newDate.getDate();
-        if (day.toString().length === 1) day = "0" + day; 
-        return day + "." + month + "." +  year;
-      },
       showFinishedDebt(debt) {
         this.$store.dispatch("updateSelectedDebtId", debt._id);
         this.$store.dispatch("updateSelectedPerson", debt.person);
@@ -64,6 +57,14 @@ export default {
         this.$store.dispatch("updateArchived", debt.archived);
         this.$store.dispatch("updatePosition", debt.position);
         this.$store.dispatch("updatePicture", debt.picture);
+        if(debt.reminder) {
+          let reminderDate = new Date(debt.reminder)        
+          this.$store.dispatch('updateTimeReminder', reminderDate.getHours() + ':' + reminderDate.getMinutes());
+          this.$store.dispatch('updateSelectedDayReminder', reminderDate.getDate());
+          this.$store.dispatch('updateSelectedMonthReminder', reminderDate.getMonth());
+          this.$store.dispatch('updateSelectedYearReminder', reminderDate.getFullYear());
+          this.$store.dispatch('updateReminderSet', true);
+        }
         this.$router.push('finishedDebt');
       },
   }

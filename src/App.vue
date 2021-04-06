@@ -6,7 +6,7 @@
       dark
       absolute
       flat
-      style="position: fixed; height:8vh"
+      style="position: fixed; height:70px;"
     >
       <!-- Linke Seite -->
       <router-link class="routerLink" to="/settings"><v-icon v-if="$route.path === '/'" color="light-blue lighten-2">{{ svgMenu }}</v-icon></router-link>
@@ -14,6 +14,7 @@
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
       <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>Zurück</router-link>
       <router-link v-if="$route.path === '/date' || $route.path === '/geolocation'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonTemp }}</router-link>
+      <v-toolbar-items v-if="$route.path === '/reminder'" class="navigationWithFunction" @click="setReminder"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPerson }}</v-toolbar-items>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
@@ -25,6 +26,7 @@
       <v-toolbar-title v-if="$route.path === '/modifyDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPersonTemp }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'">{{ selectedPerson }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/date'" style="color: white; cursor: pointer;">Datum</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/reminder'" style="color: white; cursor: pointer;">Erinnerung am...</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -35,10 +37,11 @@
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="save">Sichern</v-toolbar-items>
       <v-toolbar-items v-if="$route.path === '/finishedDebt'" class="navigationWithFunction" @click="modifyDebt">Bearbeiten</v-toolbar-items>
       <router-link v-if="$route.path === '/date'" class="routerLink" to="/modifyDebt">{{ dateCloseButton }}</router-link>
-      <v-toolbar-items v-if="$route.path === '/geolocation'" style="cursor: pointer" @click="saveLocation"><v-icon color="light-blue lighten-2">{{ svgMapMarkerRadius }}</v-icon></v-toolbar-items>
+      <v-toolbar-items v-if="$route.path === '/reminder'" class="navigationWithFunction" @click="setReminder">{{ dateCloseButton }}</v-toolbar-items>
+      <v-toolbar-items v-if="$route.path === '/geolocation'" class="pt-3" style="cursor: pointer" @click="saveLocation"><v-icon color="light-blue lighten-2">{{ svgMapMarkerRadius }}</v-icon></v-toolbar-items>
     </v-app-bar>
 
-    <v-main class="backgroundGrey">
+    <v-main class="backgroundGrey mt-3">
       <v-container fluid>
         <router-view />
       </v-container>
@@ -48,8 +51,9 @@
 
 <script>
   import { mdiLessThan, mdiPlus, mdiMenu, mdiMapMarkerRadius } from '@mdi/js';
-  import { fetchAllDebts, addDebt, updateDebt, addImage } from "@/services/DebtsService";
+  import { fetchAllDebts, addDebt, updateDebt, addImage, setReminder } from "@/services/DebtsService";
   import { fetchSettings } from "@/services/SettingsService";
+  import modifyLocalDebtsMixin from "./mixins/modifyLocalDebtsMixin";
   import { mapState } from "vuex";
   export default {
     name: 'App',
@@ -60,9 +64,9 @@
       svgMapMarkerRadius: mdiMapMarkerRadius,
       transitionName: null
     }),
-
+    mixins: [modifyLocalDebtsMixin],
     computed: {
-      ...mapState(["debts", "selectedPerson", "selectedPersonTemp", "selectedDebt", "selectedDebtId", "isPositive", "isPositiveTemp", "amount", "amountTemp", "description", "descriptionTemp", "archived", "archivedTemp", "selectedPersonPageBack", "selectedPersonPageTitle", "dateCloseButton", "selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp", "position", "positionTemp", "currentPosition", "picture", "pictureTemp", "settings"])
+      ...mapState(["debts", "selectedPerson", "selectedPersonTemp", "selectedDebt", "selectedDebtId", "isPositive", "isPositiveTemp", "amount", "amountTemp", "description", "descriptionTemp", "archived", "archivedTemp", "selectedPersonPageBack", "selectedPersonPageTitle", "dateCloseButton", "selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp", "position", "positionTemp", "currentPosition", "picture", "pictureTemp", "settings", "selectedDayReminder", "selectedMonthReminder", "selectedYearReminder", "timeReminder"])
     },
     created() {
       if (this.$workbox) {
@@ -198,6 +202,18 @@
         this.$store.dispatch('updatePositionTemp', this.position);
         this.$store.dispatch('updatePictureTemp', this.picture)
         this.$router.push('/modifyDebt');
+      },
+      async setReminder() {
+        if(this.dateCloseButton === 'Fertig') {
+          let reminder = new Date(this.selectedYearReminder, this.selectedMonthReminder, this.selectedDayReminder, this.timeReminder.substring(0,2), this.timeReminder.substring(3,5));
+          await setReminder({
+            id: this.selectedDebtId,
+            reminder: reminder
+          });
+          let debtToChangeReminder = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
+          this.$store.dispatch("setTimeReminder", [debtToChangeReminder, reminder.toISOString()]);
+        }
+        this.$router.push('/finishedDebt');
       }
     }
   };
@@ -217,13 +233,14 @@
   .routerLink {
     text-decoration: none; 
     color: #4FC3F7 !important;
+    margin-top: 5px;
   }
 
   .navigationWithFunction {
     text-decoration: none; 
     color: #4FC3F7; 
     cursor: pointer;
-    margin-top: 32px;
+    margin-top: 45px;
   }
 
   /* Global Styles */

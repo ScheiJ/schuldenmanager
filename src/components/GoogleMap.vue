@@ -3,7 +3,7 @@
     :center="currentPosition"
     :zoom="7"
     style="width: 100%;"
-    v-bind:style="((this.position.lat || this.position.lng) && $route.path === '/geolocation')  ? 'height: 84vh;' : ($route.path === '/finishedDebt') ? 'height: 30vh;' : 'height: 92vh;'"
+    v-bind:style="[((this.positionTemp.lat || this.positionTemp.lng) && $route.path === '/geolocation') ? {'height': windowHeight-140 + 'px'} : $route.path === '/geolocation' ? {'height': windowHeight-70 + 'px'} : windowHeight < 760 ? {'height': 20 + 'vh'} : {'height': 30 + 'vh'}]"
     >
         <GmapMarker
             :position="currentPosition"
@@ -17,7 +17,10 @@ import VueGeolocation from 'vue-browser-geolocation';
 export default {
     name: 'GoogleMap',
     computed: {
-      ...mapState(["position", "currentPosition", "positionTemp"])
+      ...mapState(["position", "currentPosition", "positionTemp"]),
+      windowHeight() {
+          return window.innerHeight;
+      }
     },
     created() {
         let positionHelper = this.$router.path === '/geolocation' ? this.positionTemp : this.position;

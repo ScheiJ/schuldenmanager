@@ -17,12 +17,12 @@
             filled
             readonly
             background-color="#EEEEEE"
-            v-model="selectedDate"
+            v-model="selectedDateFinished"
             class="pl-1 backgroundGrey"
             ></v-text-field>
         </v-col>
     </v-row>
-    <v-row style="height: 37vh;">
+    <v-row style="height: 23vh;">
         <v-col cols="1" class="mr-0 pt-0">
         </v-col>
         <v-col class="ml-3 pt-0">
@@ -42,33 +42,40 @@
         </v-col>
     </v-row>
     <v-row v-if="position.lat || position.lng || picture">
-      <v-col v-if="position.lat || position.lng" style="height: 37vh;">
+      <v-col v-if="position.lat || position.lng">
         <GoogleMap />
       </v-col>
-      <v-col v-if="picture" style="height: 33vh;">
+      <v-col v-if="picture" :style="windowHeight < 760 ? 'height: 24vh' : 'height: 33vh'">
         <Picture />
       </v-col>
     </v-row>
-    <v-row>
-      <v-list>
-        <v-list-item style="background-color: #37474F; position: fixed; bottom: 0; width: 100%">
-          <v-list-item-icon>
-            <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-              <v-list-item-title style="color: #4FC3F7">Erinnerung</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item style="background-color: #37474F; position: fixed; bottom: 0; width: 100%">
-          <v-list-item-icon>
-            <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content @click="sheet = !sheet">
-              <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
-              <v-list-item-title v-if="archived === true" style="color: #4FC3F7">Löschen</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+    <v-row style="position: fixed; bottom: 0; width: 100%" class="pb-3">
+      <v-list-item style="background-color: #37474F;">
+        <v-list-item-icon>
+          <v-icon color="#4FC3F7">{{ svgExportVariant }}</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+            <v-list-item-title style="color: #4FC3F7">Versenden</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item @click="$router.push('/reminder')" style="background-color: #37474F; border-bottom: 1px solid #4FC3F7; border-top: 1px solid #4FC3F7">
+        <v-list-item-icon>
+          <v-icon color="#4FC3F7">{{ svgUpdate }}</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+            <v-list-item-title style="color: #4FC3F7">Erinnerung</v-list-item-title>
+            <v-list-item-subtitle v-if="reminderSet" style="color: #4FC3F7">{{ selectedDate(selectedYearReminder, selectedMonthReminder, selectedDayReminder) }} {{ selectedYearReminder }} um {{ timeReminder }}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item style="background-color: #37474F;" @click="sheet = !sheet">
+        <v-list-item-icon>
+          <v-icon color="#4FC3F7">{{ svgTrashCanOutline }}</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+            <v-list-item-title v-if="archived === false" style="color: #4FC3F7">Archivieren</v-list-item-title>
+            <v-list-item-title v-if="archived === true" style="color: #4FC3F7">Löschen</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-row>
     <v-row>
       <v-bottom-sheet v-model="sheet" inset>
@@ -112,45 +119,53 @@
 </template>
 
 <script>
-import { mdiCheck, mdiTrashCanOutline } from '@mdi/js';
+import { mdiCheck, mdiTrashCanOutline, mdiExportVariant, mdiUpdate } from '@mdi/js';
 import { toggleArchiveDebt, deleteDebt } from "@/services/DebtsService";
 import { mapState } from "vuex";
 import modifyLocalDebtsMixin from "../mixins/modifyLocalDebtsMixin";
-import getFullDateMixin from "../mixins/getFullDateMixin";
+import getDayAndMonthMixin from "../mixins/getDayAndMonthMixin";
 export default {
   name: 'FinishedDebt',
   data () {
     return {
       svgCheck: mdiCheck,
       svgTrashCanOutline: mdiTrashCanOutline,
+      svgExportVariant: mdiExportVariant,
+      svgUpdate: mdiUpdate,
       opacity: 1,
       overlay: false,
       sheet: false
     }
   },
-  mixins: [modifyLocalDebtsMixin, getFullDateMixin],
+  mixins: [modifyLocalDebtsMixin, getDayAndMonthMixin],
   computed: {
-    ...mapState(["debts", "selectedDebtId", "isPositive", "amount", "description", "archived", "position", "picture"])
+    ...mapState(["debts", "selectedDebtId", "isPositive", "amount", "description", "archived", "position", "picture", "selectedDay", "selectedMonth", "selectedYear", "selectedDayReminder", "selectedMonthReminder", "selectedYearReminder", "timeReminder", "reminderSet"]),
+    windowHeight() {
+      return window.innerHeight;
+    },
+    selectedDateFinished() {
+      return this.selectedDate(this.selectedYear, this.selectedMonth, this.selectedDay)
+    }
   },
   components: {
     GoogleMap: () => import('@/components/GoogleMap.vue'),
     Picture: () => import('@/components/Picture.vue'),
   },
   methods: {
-      async toggleArchive() {
-          await toggleArchiveDebt({
-            id: this.selectedDebtId,
-          }); 
-          let indexToToggleArchived = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
-          this.$store.dispatch("toggleArchivedInDebts", indexToToggleArchived);
-          this.$router.push("/");
-      },
-      async deleteThisDebt() {
-          await deleteDebt(this.selectedDebtId);  
-          let indexToDelete = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
-          this.$store.dispatch("deleteDebt", indexToDelete);
-          this.$router.push("/");
-      }
+    async toggleArchive() {
+      await toggleArchiveDebt({
+        id: this.selectedDebtId,
+      }); 
+      let indexToToggleArchived = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
+      this.$store.dispatch("toggleArchivedInDebts", indexToToggleArchived);
+      this.$router.push("/");
+    },
+    async deleteThisDebt() {
+      await deleteDebt(this.selectedDebtId);  
+      let indexToDelete = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
+      this.$store.dispatch("deleteDebt", indexToDelete);
+      this.$router.push("/");
+    }
   }
 }
 </script>

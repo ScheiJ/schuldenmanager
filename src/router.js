@@ -34,6 +34,11 @@ export default new Router({
       component: () => import('./views/Date.vue')
     },
     {
+      path: '/reminder',
+      name: 'Reminder',
+      component: () => import('./views/Reminder.vue')
+    },
+    {
       path: '/geolocation',
       name: 'Geolocation',
       component: () => import('./views/Geolocation.vue')

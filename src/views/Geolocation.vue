@@ -1,10 +1,10 @@
 <template>
     <div>
-        <v-row class="pa-0">
+        <v-row>
             <GoogleMap />
         </v-row>
         <v-row>
-            <DeleteGeolocation v-if="positionTemp.lat || positionTemp.lng" />
+            <DeleteButton v-if="positionTemp.lat || positionTemp.lng" />
         </v-row>
     </div>
 </template>
@@ -15,7 +15,7 @@ export default {
     name: 'Geolocation',
     components: {
         GoogleMap: () => import('@/components/GoogleMap.vue'),
-        DeleteGeolocation: () => import('@/components/DeleteGeolocation.vue')
+        DeleteButton: () => import('@/components/DeleteButton.vue')
     },
     computed: {
       ...mapState(["positionTemp"])

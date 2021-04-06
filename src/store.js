@@ -59,7 +59,12 @@ export default new Vuex.Store({
     positionTemp: {
       lat: 0,
       lng: 0
-    }
+    },
+    selectedDayReminder: new Date().getDate(),
+    selectedMonthReminder: new Date().getMonth()+1,
+    selectedYearReminder: new Date().getFullYear(),
+    timeReminder: null,
+    reminderSet: false
   },
   mutations: {
     updateSettings(state, value) {
@@ -160,6 +165,24 @@ export default new Vuex.Store({
     },
     updateCurrentPosition(state, value) {
       state.currentPosition = value;
+    },
+    updateSelectedDayReminder(state, value) {
+      state.selectedDayReminder = value;
+    },
+    updateSelectedMonthReminder(state, value) {
+      state.selectedMonthReminder = value;
+    },
+    updateSelectedYearReminder(state, value) {
+      state.selectedYearReminder = value;
+    },
+    updateTimeReminder(state, value) {
+      state.timeReminder = value;
+    },
+    setTimeReminder(state, value) {
+      state.debts[value[0]].reminder = value[1];
+    },
+    updateReminderSet(state, value) {
+      state.reminderSet = value;
     }
   },
   actions: {
@@ -261,6 +284,24 @@ export default new Vuex.Store({
     },
     updateCurrentPosition(context, value) {
       context.commit("updateCurrentPosition", value);
-    }
+    },
+    updateSelectedDayReminder(context, value) {
+      context.commit("updateSelectedDayReminder", value);
+    },
+    updateSelectedMonthReminder(context, value) {
+      context.commit("updateSelectedMonthReminder", value);
+    },
+    updateSelectedYearReminder(context, value) {
+      context.commit("updateSelectedYearReminder", value);
+    },
+    updateTimeReminder(context, value) {
+      context.commit("updateTimeReminder", value);
+    },
+    setTimeReminder(context, value) {
+      context.commit("setTimeReminder", value);
+    },
+    updateReminderSet(context, value) {
+      context.commit("updateReminderSet", value);
+    },
   }
 })

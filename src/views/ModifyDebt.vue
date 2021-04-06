@@ -29,7 +29,7 @@
           filled
           readonly
           background-color="#EEEEEE"
-          v-model="selectedDate"
+          v-model="selectedDateModify"
           class="pl-1"
           ></v-text-field>
         </v-col>
@@ -122,10 +122,10 @@
   import { mdiCheck, mdiMap, mdiCamera } from '@mdi/js';
   import "@/plugins/vuetify-money.js";
   import { mapState } from "vuex";
-  import getFullDateMixin from "../mixins/getFullDateMixin";
+  import getDayAndMonthMixin from "../mixins/getDayAndMonthMixin";
   export default {
     name: 'ModifyDebt',
-    mixins: [getFullDateMixin],
+    mixins: [getDayAndMonthMixin],
     data: () => {
       return {
         sheet: false,
@@ -153,7 +153,7 @@
       }
     },
     computed: {
-      ...mapState(["isPositiveTemp", "amountTemp", "descriptionTemp", "archivedTemp", "positionTemp", "pictureTemp"]),
+      ...mapState(["isPositiveTemp", "amountTemp", "descriptionTemp", "archivedTemp", "positionTemp", "pictureTemp", "selectedDayTemp", "selectedMonthTemp", "selectedYearTemp"]),
       amountTemp: {
         get() {
           return this.$store.state.amountTemp;
@@ -170,6 +170,9 @@
           this.$store.dispatch('updateDescriptionTemp', value);
         }
       },
+      selectedDateModify() {
+        return this.selectedDate(this.selectedYearTemp, this.selectedMonthTemp, this.selectedDayTemp)
+      }
     },
     methods: {
       turnAround() {

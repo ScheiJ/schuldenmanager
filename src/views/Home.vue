@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-row>
-      <v-col class="pa-2">
+      <v-col class="pa-2 pt-3">
         <v-divider dark></v-divider>
         <v-text-field
           placeholder="Suchen"
-          prepend-inner-icon="mdi-magnify"
+          :prepend-inner-icon="svgMagnify"
           dense
           solo
           flat
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+  import { mdiMagnify } from '@mdi/js';
   import { mapState } from "vuex";
   export default {
     name: 'Home',
@@ -47,7 +48,8 @@
       TotalAmount: () => import('@/components/TotalAmount.vue')
     },
     data: () => ({
-      selectionText: ["Offen", "Archiviert", "Alle"]
+      selectionText: ["Offen", "Archiviert", "Alle"],
+      svgMagnify: mdiMagnify
     }),
     computed: {
       ...mapState(["persons", "searchInput", "selectedDebt", "selectedPerson", "selectedDebtId", "isPositive", "isPositiveTemp", "amount", "amountTemp", "description", "descriptionTemp", "selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp", "archived", "archivedTemp", "position", "positionTemp", "currentPosition", "settings", "picture", "pictureTemp"]),
@@ -108,10 +110,13 @@
         this.$store.dispatch('updateDescriptionTemp', "");
         this.$store.dispatch('updateSelectedDay', new Date().getDate());
         this.$store.dispatch('updateSelectedDayTemp', new Date().getDate());
+        this.$store.dispatch('updateSelectedDayReminder', new Date().getDate());
         this.$store.dispatch('updateSelectedMonth', new Date().getMonth());
         this.$store.dispatch('updateSelectedMonthTemp', new Date().getMonth());
+        this.$store.dispatch('updateSelectedMonthReminder', new Date().getMonth());
         this.$store.dispatch('updateSelectedYear', new Date().getFullYear());
         this.$store.dispatch('updateSelectedYearTemp', new Date().getFullYear());
+        this.$store.dispatch('updateSelectedYearReminder', new Date().getFullYear());
         this.$store.dispatch('updateSelectedPerson', "");
         this.$store.dispatch('updateSelectedPersonTemp', "");
         this.$store.dispatch('updateArchived', false);
@@ -121,6 +126,8 @@
         this.$store.dispatch('updateCurrentPosition', {lat:0, lng:0});
         this.$store.dispatch('updatePicture', "");
         this.$store.dispatch('updatePictureTemp', "");
+        this.$store.dispatch('updateTimeReminder', null);
+        this.$store.dispatch('updateReminderSet', false);
       },
     }
   }
