@@ -81,3 +81,26 @@ const networkWithBackgroundSync = new workbox.strategies.NetworkOnly({
 workbox.routing.registerRoute(/\/*/, networkWithBackgroundSync, "POST");
 workbox.routing.registerRoute(/\/*/, networkWithBackgroundSync, "PUT");
 workbox.routing.registerRoute(/\/*/, networkWithBackgroundSync, "DELETE");
+
+// Push Notifications
+
+let click_open_url
+self.addEventListener('push', event => {
+    let push_message = event.data.text();
+
+    click_open_url = "/";
+    const options = {
+        body: push_message,
+        tag: 'alert-sample-Julian'
+    };
+    event.waitUntil(self.registration.showNotification("Still Waitin", options));
+});
+
+self.addEventListener('notificationclick', event => {
+    const clickedNotification = event.notification;
+    clickedNotification.close();
+    if(click_open_url) {
+        const promiseChain = clients.openWindow(click_open_url);
+        event.waitUntil(promiseChain);
+    }
+});

@@ -173,8 +173,6 @@ export default {
           text: 'Hi ' + this.selectedPerson + ", \neine kleine Erinnerung.\nDu schuldest mir noch " + this.amount + " € vom " + this.selectedDay + "." + this.selectedMonth + "." + this.selectedYear + ".\n '" + this.description + "'",
           url: 'https://127.0.0.1/',
         })
-          .then(() => console.log('Successful share'))
-          .catch((error) => console.log('Error sharing', error));
       }
     },
   }

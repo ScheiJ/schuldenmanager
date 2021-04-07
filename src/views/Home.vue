@@ -49,7 +49,8 @@
     },
     data: () => ({
       selectionText: ["Offen", "Archiviert", "Alle"],
-      svgMagnify: mdiMagnify
+      svgMagnify: mdiMagnify,
+      test: ""
     }),
     computed: {
       ...mapState(["persons", "searchInput", "selectedDebt", "selectedPerson", "selectedDebtId", "isPositive", "isPositiveTemp", "amount", "amountTemp", "description", "descriptionTemp", "selectedDay", "selectedDayTemp", "selectedMonth", "selectedMonthTemp", "selectedYear", "selectedYearTemp", "archived", "archivedTemp", "position", "positionTemp", "currentPosition", "settings", "picture", "pictureTemp"]),
@@ -128,7 +129,7 @@
         this.$store.dispatch('updatePictureTemp', "");
         this.$store.dispatch('updateTimeReminder', null);
         this.$store.dispatch('updateReminderSet', false);
-      },
+      }
     }
   }
 </script>

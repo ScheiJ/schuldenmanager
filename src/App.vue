@@ -112,7 +112,8 @@
           archived: false,
           date: new Date(this.selectedYearTemp, this.selectedMonthTemp, Number(this.selectedDayTemp)+1).toISOString().substr(0, 10),
           position: this.positionTemp,
-          picture: ""
+          picture: "",
+          reminder: ""
         }
         if(this.pictureTemp) {
           if(typeof this.pictureTemp !== 'string') {
