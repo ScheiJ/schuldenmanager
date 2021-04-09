@@ -1,4 +1,4 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = {
   pwa: {
     name: "Schuldenmanager",
@@ -13,7 +13,7 @@ module.exports = {
   configureWebpack: {
     mode: 'production',
     plugins: [
-      new BundleAnalyzerPlugin(),
+      //new BundleAnalyzerPlugin(),
     ],
     optimization: {
       nodeEnv: 'production',
