@@ -19,7 +19,7 @@ export default {
         setSrc() {
             let fallbackSrc = localStorage.getItem(this.picture)
             document.getElementById('image').setAttribute("onerror", "this.onerror=null;this.src='" + fallbackSrc + "'");
-            document.getElementById('image').src = "http://127.0.0.1:8000/image/" + this.picture; 
+            document.getElementById('image').src = "https://schuldenmanager-backend.herokuapp.com/image/" + this.picture; 
         },
     }
 }

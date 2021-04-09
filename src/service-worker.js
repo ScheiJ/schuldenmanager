@@ -46,7 +46,7 @@ workbox.routing.registerRoute(
 );
 
 workbox.routing.registerRoute(
-    new RegExp("http://127.0.0.1:8000/image/(.*)"),
+    new RegExp("https://schuldenmanager-backend.herokuapp.com/image/(.*)"),
     new workbox.strategies.NetworkFirst({
         cacheName: "pictures",
         plugins: [
@@ -59,7 +59,7 @@ workbox.routing.registerRoute(
 );
 
 workbox.routing.registerRoute(
-    new RegExp('http://localhost:8000/(.*)'),
+    new RegExp('https://schuldenmanager-backend.herokuapp.com/(.*)'),
     new workbox.strategies.NetworkFirst({
         cacheName: 'api',
         plugins: [
