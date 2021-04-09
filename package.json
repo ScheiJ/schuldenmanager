@@ -5,6 +5,7 @@
     "node": "12.2.0"
   },
   "private": true,
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "serve": "vue-cli-service serve",
