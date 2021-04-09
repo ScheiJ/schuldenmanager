@@ -68,10 +68,10 @@ import { mdiCalendarBlank, mdiClockTimeFourOutline } from '@mdi/js'
 import { mapState } from 'vuex';
 import getFullNormalDateMixin from '@/mixins/getFullNormalDateMixin';
 export default {
-    name: 'Date',
+    name: 'Reminder',
     components: {
-      DatePicker: () => import('@/components/DatePicker.vue'),
-      DeleteButton: () => import('@/components/DeleteButton.vue')
+      DatePicker: () => import(/* webpackPrefetch: true */'@/components/DatePicker.vue'),
+      DeleteButton: () => import(/* webpackPrefetch: true */'@/components/DeleteButton.vue')
     },
     mixins: [getFullNormalDateMixin],
     computed: {

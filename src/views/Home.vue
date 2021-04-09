@@ -43,9 +43,9 @@
   export default {
     name: 'Home',
     components: {
-      PersonsAndDebts: () => import('@/components/PersonsAndDebts.vue'),
-      OnlyPersonsAndAmount: () => import('@/components/OnlyPersonsAndAmount.vue'),
-      TotalAmount: () => import('@/components/TotalAmount.vue')
+      PersonsAndDebts: () => import(/* webpackPrefetch: true */'@/components/PersonsAndDebts.vue'),
+      OnlyPersonsAndAmount: () => import(/* webpackPrefetch: true */'@/components/OnlyPersonsAndAmount.vue'),
+      TotalAmount: () => import(/* webpackPrefetch: true */'@/components/TotalAmount.vue')
     },
     data: () => ({
       selectionText: ["Offen", "Archiviert", "Alle"],

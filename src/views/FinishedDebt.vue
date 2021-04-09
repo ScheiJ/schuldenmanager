@@ -148,8 +148,8 @@ export default {
     }
   },
   components: {
-    GoogleMap: () => import('@/components/GoogleMap.vue'),
-    Picture: () => import('@/components/Picture.vue'),
+    GoogleMap: () => import(/* webpackPrefetch: true */'@/components/GoogleMap.vue'),
+    Picture: () => import(/* webpackPrefetch: true */'@/components/Picture.vue'),
   },
   methods: {
     async toggleArchive() {
@@ -170,7 +170,7 @@ export default {
       if (navigator.share) {
         navigator.share({
           title: 'Kurze Erinnerung',
-          text: 'Hi ' + this.selectedPerson + ", \neine kleine Erinnerung.\nDu schuldest mir noch " + this.amount + " € vom " + this.selectedDay + "." + this.selectedMonth + "." + this.selectedYear + ".\n '" + this.description + "'",
+          text: 'Hi ' + this.selectedPerson + ", \n\neine kleine Erinnerung.\nDu schuldest mir noch " + this.amount + " € vom " + this.selectedDay + "." + this.selectedMonth + "." + this.selectedYear + ".\n '" + this.description + "'",
           url: 'https://127.0.0.1/',
         })
       }
@@ -183,4 +183,4 @@ export default {
     .centered-input >>> input {
         text-align: center !important;
     }
-</style>>
+</style>

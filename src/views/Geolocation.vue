@@ -14,8 +14,8 @@ import { mapState } from "vuex";
 export default {
     name: 'Geolocation',
     components: {
-        GoogleMap: () => import('@/components/GoogleMap.vue'),
-        DeleteButton: () => import('@/components/DeleteButton.vue')
+        GoogleMap: () => import(/* webpackPrefetch: true */'@/components/GoogleMap.vue'),
+        DeleteButton: () => import(/* webpackPrefetch: true */'@/components/DeleteButton.vue')
     },
     computed: {
       ...mapState(["positionTemp"])

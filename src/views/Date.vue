@@ -10,7 +10,7 @@
 export default {
     name: 'Date',
     components: {
-      DatePicker: () => import('@/components/DatePicker.vue')
+      DatePicker: () => import(/* webpackPrefetch: true */'@/components/DatePicker.vue')
     }
 }
 </script>

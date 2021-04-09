@@ -1,9 +1,9 @@
-//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = {
   pwa: {
     name: "Schuldenmanager",
-    themeColor: "#42b983",
-    msTileColor: "#42b983",
+    themeColor: "#37474F",
+    msTileColor: "#37474F",
     appleMobileWebAppCache: "yes",
     workboxPluginMode: "InjectManifest",
     workboxOptions: {
@@ -11,15 +11,27 @@ module.exports = {
     },
   },
   configureWebpack: {
+    mode: 'production',
     plugins: [
-      //new BundleAnalyzerPlugin(),
+      new BundleAnalyzerPlugin(),
     ],
     optimization: {
+      nodeEnv: 'production',
+      minimize: true,
       splitChunks: {
         minSize: 10000,
         maxSize: 250000,
         chunks: 'all'
       }
     }
+  },
+  chainWebpack: config => {
+    config.plugin('VuetifyLoaderPlugin').tap(args => [{
+      match (originalTag, { kebabTag, camelTag, path, component }) {
+        if (kebabTag.startsWith('core-')) {
+          return [camelTag, `import ${camelTag} from '@/components/core/${camelTag.substring(4)}.vue'`]
+        }
+      }
+    }])
   }
 }
