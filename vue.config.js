@@ -11,12 +11,10 @@ module.exports = {
     },
   },
   configureWebpack: {
-    mode: 'production',
     plugins: [
       //new BundleAnalyzerPlugin(),
     ],
     optimization: {
-      nodeEnv: 'production',
       minimize: true,
       splitChunks: {
         minSize: 10000,

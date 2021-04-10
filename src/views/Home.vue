@@ -96,8 +96,6 @@
     },
     mounted: function() {
       this.resetStates();
-      //let scrollTo = document.getElementById('contentDebts');
-      //scrollTo.scrollIntoView({behavior: 'smooth'});
     },
     methods: {
       resetStates() {

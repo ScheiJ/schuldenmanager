@@ -56,6 +56,10 @@ export default new Router({
       path: '/debtsOfOnePerson',
       name: 'DebtsOfOnePerson',
       component: () => import(/* webpackPrefetch: true */'./views/DebtsOfOnePerson.vue')
-    }
+    },
+    { 
+      path: '*', 
+      component: () => import (/* webpackPrefetch: true */'./views/Home.vue')
+    },
   ]
 })
