@@ -19,7 +19,9 @@
     "express": "^4.17.1",
     "register-service-worker": "^1.7.2",
     "vue": "^2.6.12",
+    "vue-browser-geolocation": "^1.8.0",
     "vue-router": "^3.5.1",
+    "vue2-google-maps": "^0.10.7",
     "vuelidate": "^0.7.6",
     "vuetify": "^2.4.7",
     "vuetify-money": "^1.2.0",
@@ -41,11 +43,9 @@
     "sass": "^1.32.8",
     "sass-loader": "^10.1.1",
     "serve-static": "^1.14.1",
-    "vue-browser-geolocation": "^1.8.0",
     "vue-cli-plugin-vuetify": "^2.3.1",
     "vue-loader": "^15.9.6",
     "vue-template-compiler": "^2.6.12",
-    "vue2-google-maps": "^0.10.7",
     "vuetify-loader": "^1.7.1",
     "webpack-bundle-analyzer": "^4.4.0"
   }
