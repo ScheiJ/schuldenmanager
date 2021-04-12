@@ -60,11 +60,12 @@
           <br>
           <v-btn
           v-bind:style="this.pictureTemp ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
-          @click="sheet = true"
+          @click="pictureOsDecision"
           depressed
           color="#ffffff"
           class="ml-4"
-          ><v-icon>{{ svgCamera }}</v-icon></v-btn>
+          ><v-icon>{{ svgCamera }}</v-icon>
+          </v-btn>
       </v-col>
     </v-row>
     <v-bottom-sheet inset v-model="sheet">
@@ -92,7 +93,6 @@
         >
           <v-card-text v-if="!pictureTemp" style="color: #4FC3F7" class="text-center">Foto auswählen</v-card-text>
           <v-card-text v-if="pictureTemp" style="color: #4FC3F7;" class="text-center">Neues Foto auswählen</v-card-text>
-          <input v-show="false" ref="upload" type="file" name="image" @change="selectPicture"/>
         </v-card>
         <v-card
         class="d-flex align-center mx-auto"
@@ -115,6 +115,7 @@
         </v-card>
       </v-sheet>
     </v-bottom-sheet>
+    <input v-show="false" ref="upload" accept="image/*" type="file" name="image" @change="selectPicture"/>
   </div>
 </template>
 
@@ -193,6 +194,35 @@
       deletePicture() {
         this.$store.dispatch('updatePictureTemp', "");
         this.sheet = false;
+      },
+      pictureOsDecision() {
+        if(this.getOS() === 'iOS' || this.getOS() === 'Android') {
+          this.$refs.upload.click()
+        } else {
+          this.sheet = true;
+        }
+      },
+      getOS() {
+        let userAgent = window.navigator.userAgent,
+            platform = window.navigator.platform,
+            macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+            windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+            iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+            os = null;
+
+        if (macosPlatforms.indexOf(platform) !== -1) {
+          os = 'Mac OS';
+        } else if (iosPlatforms.indexOf(platform) !== -1) {
+          os = 'iOS';
+        } else if (windowsPlatforms.indexOf(platform) !== -1) {
+          os = 'Windows';
+        } else if (/Android/.test(userAgent)) {
+          os = 'Android';
+        } else if (!os && /Linux/.test(platform)) {
+          os = 'Linux';
+        }
+
+        return os;
       }
     }
   }
