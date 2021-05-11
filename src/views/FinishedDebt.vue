@@ -41,8 +41,8 @@
         <v-col cols="1" class="ml-3 mr-0 pt-0">
         </v-col>
     </v-row>
-    <v-row v-if="position.latitude || position.longitude || picture">
-      <v-col v-if="position.latitude || position.longitude">
+    <v-row v-if="position.lat || position.lng || picture">
+      <v-col v-if="position.lat || position.lng">
         <GoogleMap />
       </v-col>
       <v-col v-if="picture" :style="windowHeight < 760 ? 'height: 24vh' : 'height: 33vh'">

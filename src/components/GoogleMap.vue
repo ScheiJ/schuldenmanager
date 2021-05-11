@@ -3,7 +3,7 @@
     :center="currentPosition"
     :zoom="7"
     style="width: 100%;"
-    v-bind:style="[((this.positionTemp.latitude || this.positionTemp.longitude) && $route.path === '/geolocation') ? {'height': windowHeight-140 + 'px'} : $route.path === '/geolocation' ? {'height': windowHeight-70 + 'px'} : windowHeight < 760 ? {'height': 20 + 'vh'} : {'height': 30 + 'vh'}]"
+    v-bind:style="[((this.positionTemp.lat || this.positionTemp.lng) && $route.path === '/geolocation') ? {'height': windowHeight-140 + 'px'} : $route.path === '/geolocation' ? {'height': windowHeight-70 + 'px'} : windowHeight < 760 ? {'height': 20 + 'vh'} : {'height': 30 + 'vh'}]"
     >
         <GmapMarker
             :position="currentPosition"
@@ -25,9 +25,13 @@ export default {
     created() {
         let positionHelper = this.$router.path === '/geolocation' ? this.positionTemp : this.position;
 
-        if (!positionHelper.latitude && !positionHelper.longitude) {
+        if (!positionHelper.lat && !positionHelper.lng) {
             navigator.geolocation.getCurrentPosition(position => {
-                this.$store.dispatch("updateCurrentPosition", position.coords);
+                let coords = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                }
+                this.$store.dispatch("updateCurrentPosition", coords);
             })
         } else this.$store.dispatch("updateCurrentPosition", positionHelper); 
     },
