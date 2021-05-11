@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import * as VueGoogleMaps from 'vue2-google-maps';
+import { googlemapskey } from '../creds';
 
 Vue.use(VueGoogleMaps, {
     load: {
-        key: process.env.googlemapskey
+        key: googlemapskey
     },
 })
 export { VueGoogleMaps };
