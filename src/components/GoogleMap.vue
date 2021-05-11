@@ -13,7 +13,7 @@
 
 <script>
 import { mapState } from "vuex";
-import VueGeolocation from 'vue-browser-geolocation';
+//import VueGeolocation from 'vue-browser-geolocation';
 export default {
     name: 'GoogleMap',
     computed: {
@@ -26,11 +26,15 @@ export default {
         let positionHelper = this.$router.path === '/geolocation' ? this.positionTemp : this.position;
 
         if (!positionHelper.lat && !positionHelper.lng) {
-            VueGeolocation.getLocation({})
-            .then(coordinates => {
-                this.$store.dispatch("updateCurrentPosition", coordinates);
+            navigator.geolocation.getCurrentPosition(position => {
+                this.$store.dispatch("updateCurrentPosition", position.coords);
             })
-            .catch(error => alert(error))
+            // VueGeolocation.getLocation({})
+            // .then(coordinates => {
+            //     console.log(coordinates)
+            //     this.$store.dispatch("updateCurrentPosition", coordinates);
+            // })
+            // .catch(error => alert(error))
         } else this.$store.dispatch("updateCurrentPosition", positionHelper); 
     },
 }
