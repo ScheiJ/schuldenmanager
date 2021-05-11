@@ -22,7 +22,7 @@ export default {
           return window.innerHeight;
       }
     },
-    created() {
+    mounted() {
         let positionHelper = this.$router.path === '/geolocation' ? this.positionTemp : this.position;
 
         if (!positionHelper.lat && !positionHelper.lng) {
