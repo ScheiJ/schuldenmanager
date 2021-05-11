@@ -31,7 +31,7 @@ export default {
     methods: {
         async deleteThing() {
             if(this.$route.path === '/geolocation') {
-                this.$store.dispatch("updatePositionTemp", {lat: 0, lng:0});
+                this.$store.dispatch("updatePositionTemp", {latitude: 0, longitude:0});
                 this.$router.push('/modifyDebt');
             } else {
                 this.$store.dispatch('updateReminderSet', false);

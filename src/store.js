@@ -49,16 +49,16 @@ export default new Vuex.Store({
     picture: "",
     pictureTemp: "",
     currentPosition: {
-      lat: 0,
-      lng: 0
+      latitude: 0,
+      longitude: 0
     },
     position: {
-      lat: 0,
-      lng: 0
+      latitude: 0,
+      longitude: 0
     },
     positionTemp: {
-      lat: 0,
-      lng: 0
+      latitude: 0,
+      longitude: 0
     },
     selectedDayReminder: new Date().getDate(),
     selectedMonthReminder: new Date().getMonth()+1,

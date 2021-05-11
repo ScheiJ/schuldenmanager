@@ -120,9 +120,9 @@
         this.$store.dispatch('updateSelectedPersonTemp', "");
         this.$store.dispatch('updateArchived', false);
         this.$store.dispatch('updateArchivedTemp', false);
-        this.$store.dispatch('updatePosition', {lat:0, lng:0});
-        this.$store.dispatch('updatePositionTemp', {lat:0, lng:0});
-        this.$store.dispatch('updateCurrentPosition', {lat:0, lng:0});
+        this.$store.dispatch('updatePosition', {latitude:0, longitude:0});
+        this.$store.dispatch('updatePositionTemp', {latitude:0, longitude:0});
+        this.$store.dispatch('updateCurrentPosition', {latitude:0, longitude:0});
         this.$store.dispatch('updatePicture', "");
         this.$store.dispatch('updatePictureTemp', "");
         this.$store.dispatch('updateTimeReminder', null);

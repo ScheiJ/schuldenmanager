@@ -51,7 +51,7 @@
       </v-col>
       <v-col class="col-xl-1 col-lg-1 col-md-2 col-sm-2 col-4 pt-0">
           <v-btn
-          v-bind:style="(this.positionTemp.lat || this.positionTemp.lng) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
+          v-bind:style="(this.positionTemp.latitude || this.positionTemp.longitude) ? 'border-bottom: 4px solid #8BC34A;' : 'border-bottom: none;'"
           @click="$router.push('/geolocation')"
           depressed
           color="#ffffff"

@@ -4,7 +4,7 @@
             <GoogleMap />
         </v-row>
         <v-row>
-            <DeleteButton v-if="positionTemp.lat || positionTemp.lng" />
+            <DeleteButton v-if="positionTemp.latitude || positionTemp.longitude" />
         </v-row>
     </div>
 </template>
