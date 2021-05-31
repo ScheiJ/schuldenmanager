@@ -170,8 +170,8 @@ export default {
       if (navigator.share) {
         navigator.share({
           title: 'Kurze Erinnerung',
-          text: 'Hi ' + this.selectedPerson + ", \n\neine kleine Erinnerung.\nDu schuldest mir noch " + this.amount + " € vom " + this.selectedDay + "." + this.selectedMonth + "." + this.selectedYear + ".\n '" + this.description + "'",
-          url: 'https://127.0.0.1/',
+          text: 'Hi ' + this.selectedPerson + ", \n\neine kleine Erinnerung.\nDu schuldest mir noch " + this.amount + " € vom " + this.selectedDay + "." + this.selectedMonth + "." + this.selectedYear + ".\n \"" + this.description + "\"",
+          url: 'https://schuldenmanager.herokuapp.com/',
         })
       }
     },
