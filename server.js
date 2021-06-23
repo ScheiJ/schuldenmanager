@@ -10,7 +10,7 @@ function requireHTTPS(req, res, next) {
     next();
 }
 
-app = express();
+const app = express();
 app.use(requireHTTPS);
 app.use(serveStatic(path.join(__dirname, 'dist')));
 
