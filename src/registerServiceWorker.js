@@ -49,7 +49,7 @@ function subscribePush(){
       return registration.pushManager.subscribe(subscribeOptions);
     })
     .then(function(pushSubscription) {
-      subscribe(JSON.stringify(pushSubscription));
+      subscribe(pushSubscription);
       return pushSubscription;
   })
 }    
