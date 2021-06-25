@@ -11,7 +11,6 @@ if (process.env.NODE_ENV === 'production') {
       );
 
       Notification.requestPermission(status => {
-        console.log("Status " + status);
         if(status === "granted") subscribePush();
       })
     },
