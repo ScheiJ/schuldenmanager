@@ -28,4 +28,8 @@ const setReminder = (params) => {
   return Api().put("reminder/" + params.id, params).catch(err => responseNetworkErrorDuringOffline(err));
 };
 
-export { fetchAllDebts, addDebt, updateDebt, toggleArchiveDebt, deleteDebt, addImage, setReminder }
+const subscribe = (params) => {
+  return Api().post("subscribe", params).catch(err => responseNetworkErrorDuringOffline(err));
+};
+
+export { fetchAllDebts, addDebt, updateDebt, toggleArchiveDebt, deleteDebt, addImage, setReminder, subscribe }

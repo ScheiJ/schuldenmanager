@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'production') {
 
       Notification.requestPermission(status => {
         console.log("Status " + status);
-        if(status === "granted") console.log(subscribe());
+        if(status === "granted") subscribe();
       })
     },
     registered () {
@@ -36,6 +36,8 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
+import { subscribe } from "@/services/DebtsService";
+
 function subscribe(){
   return navigator.serviceWorker.register('service-worker.js')
     .then(function(registration) {
@@ -47,9 +49,7 @@ function subscribe(){
       return registration.pushManager.subscribe(subscribeOptions);
     })
     .then(function(pushSubscription) {
-      console.log('PushSubscription: ', JSON.stringify(pushSubscription));
-      //post to our subscriptions service
-      //http://localhost:3030/subscriptions
+      subscribe(JSON.stringify(pushSubscription));
       return pushSubscription;
   })
 }    
