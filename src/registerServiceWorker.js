@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === 'production') {
 
       Notification.requestPermission(status => {
         console.log("Status " + status);
+        if(status === "granted") console.log(subscribe());
       })
     },
     registered () {
@@ -33,4 +34,37 @@ if (process.env.NODE_ENV === 'production') {
       console.error('Error during service worker registration:', error)
     }
   })
+}
+
+function subscribe(){
+  return navigator.serviceWorker.register('service-worker.js')
+    .then(function(registration) {
+      const subscribeOptions = {
+        userVisibleOnly: true,
+        applicationServerKey:
+        urlB64ToUint8Array('BCUPvHlKBd7KOJD0xPMeQ3o13SArZAtZqPyE1LBFbNQjhxW1koxt9yj8Ry4VBm8wjW3R2cjpd6_aeG2aN0NZvsc') //your VAPID public key created before
+      };
+      return registration.pushManager.subscribe(subscribeOptions);
+    })
+    .then(function(pushSubscription) {
+      console.log('PushSubscription: ', JSON.stringify(pushSubscription));
+      //post to our subscriptions service
+      //http://localhost:3030/subscriptions
+      return pushSubscription;
+  })
+}    
+
+function urlB64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
