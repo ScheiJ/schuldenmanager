@@ -22,7 +22,7 @@
             ></v-text-field>
         </v-col>
     </v-row>
-    <v-row style="height: 23vh;">
+    <v-row style="height: 20vh;">
         <v-col cols="1" class="mr-0 pt-0">
         </v-col>
         <v-col class="ml-3 pt-0">
@@ -35,7 +35,7 @@
             flat
             readonly
             no-resize
-            rows="7"
+            rows="4"
             ></v-textarea>
         </v-col>
         <v-col cols="1" class="ml-3 mr-0 pt-0">

@@ -6,42 +6,43 @@ workbox.setConfig({
 
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
+// Cache the Google Fonts stylesheets with a stale-while-revalidate strategy.
 workbox.routing.registerRoute(
-    /\.(?:png|gif|jpg|jpeg|svg)$/,
-    new workbox.strategies.CacheFirst({
-      cacheName: 'images',
+    ({url}) => url.origin === 'https://fonts.googleapis.com',
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: 'google-fonts-stylesheets',
       plugins: [
         new workbox.expiration.Plugin({
-          maxEntries: 60,
-          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+          maxEntries: 100,
         }),
       ],
-    }),
-  );
+    })
+);
 
+// Cache the underlying font files with a cache-first strategy for 1 year.
 workbox.routing.registerRoute(
-    new RegExp("https://fonts.(?:googleapis|gstatic).com/(.*)"),
+    ({url}) => url.origin === 'https://fonts.gstatic.com',
     new workbox.strategies.CacheFirst({
-        cacheName: "googleapis",
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxEntries: 30
-            })
-        ],
-        method: "GET",
+      cacheName: 'google-fonts-webfonts',
+      plugins: [
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: 60 * 60 * 24 * 365,
+          maxEntries: 30,
+        }),
+      ],
     })
 );
 
 workbox.routing.registerRoute(
     new RegExp("https://maps.(?:googleapis|gstatic).com/(.*)"),
     new workbox.strategies.NetworkFirst({
-        cacheName: "maps",
+        cacheName: "google-maps",
         plugins: [
             new workbox.expiration.Plugin({
-                maxEntries: 10
+                maxEntries: 50,
+                maxAgeSeconds: 24 * 60 * 60
             })
-        ],
-        method: "GET",
+        ]
     })
 );
 
@@ -51,7 +52,8 @@ workbox.routing.registerRoute(
         cacheName: "pictures",
         plugins: [
             new workbox.expiration.Plugin({
-                maxEntries: 10
+                maxEntries: 50,
+                maxAgeSeconds: 24 * 60 * 60
             })
         ],
         method: "GET",
@@ -64,7 +66,7 @@ workbox.routing.registerRoute(
         cacheName: 'api',
         plugins: [
             new workbox.expiration.Plugin({
-                maxAgeSeconds: 24 * 60 * 60,
+                maxAgeSeconds: 7 * 24 * 60 * 60,
             }),
         ],
         method: "GET"
