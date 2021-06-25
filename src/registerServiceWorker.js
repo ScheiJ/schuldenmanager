@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'production') {
 
       Notification.requestPermission(status => {
         console.log("Status " + status);
-        if(status === "granted") subscribe();
+        if(status === "granted") subscribePush();
       })
     },
     registered () {
@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
 
 import { subscribe } from "@/services/DebtsService";
 
-function subscribe(){
+function subscribePush(){
   return navigator.serviceWorker.register('service-worker.js')
     .then(function(registration) {
       const subscribeOptions = {
