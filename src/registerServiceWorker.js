@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-import { subscribe } from "@/services/DebtsService";
+import { subscribePushNotification } from "@/services/DebtsService";
 
 function subscribePush(){
   return navigator.serviceWorker.register('service-worker.js')
@@ -49,7 +49,7 @@ function subscribePush(){
       return registration.pushManager.subscribe(subscribeOptions);
     })
     .then(function(pushSubscription) {
-      subscribe(pushSubscription);
+      subscribePushNotification(pushSubscription);
       return pushSubscription;
   })
 }    
