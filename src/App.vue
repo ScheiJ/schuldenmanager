@@ -85,7 +85,7 @@
       async fetchDebts() {
         let debts = await fetchAllDebts();
         debts = debts.data.debts;
-        this.$store.commit("updateDebts", debts);
+        this.$store.dispatch("updateDebts", debts);
         this.checkForNewPersons();
       },
       checkForNewPersons() {
