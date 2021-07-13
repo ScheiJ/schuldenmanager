@@ -93,8 +93,9 @@ self.addEventListener('push', event => {
     click_open_url = "/";
     const options = {
         body: push_message,
-        tag: 'alert-sample-Julian'
+        silent: false
     };
+    console.log("Zeige Notification an!")
     event.waitUntil(self.registration.showNotification("Still Waitin", options));
 });
 
