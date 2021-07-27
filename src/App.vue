@@ -14,7 +14,7 @@
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
       <router-link v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>Zurück</router-link>
       <router-link v-if="$route.path === '/date' || $route.path === '/geolocation'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonTemp }}</router-link>
-      <v-toolbar-items v-if="$route.path === '/reminder'" class="navigationWithFunction" @click="setReminder"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPerson }}</v-toolbar-items>
+      <v-toolbar-items v-if="$route.path === '/reminder'" class="reminderBack" @click="setReminder"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon><p class="pt-4">{{ selectedPerson }}</p></v-toolbar-items>
       <v-toolbar-items v-if="$route.path === '/modifyDebt'" class="navigationWithFunction" @click="resetHeadingSelectPerson">Abbrechen</v-toolbar-items>
 
       <v-spacer></v-spacer>
@@ -248,6 +248,13 @@
     color: #4FC3F7; 
     cursor: pointer;
     margin-top: 45px;
+  }
+
+  .reminderBack {
+    text-decoration: none; 
+    color: #4FC3F7; 
+    cursor: pointer;
+    margin-top: 5px;
   }
 
   /* Global Styles */
