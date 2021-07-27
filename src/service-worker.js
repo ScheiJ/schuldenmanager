@@ -33,6 +33,7 @@ workbox.routing.registerRoute(
     })
 );
 
+// Cache Google Maps Files
 workbox.routing.registerRoute(
     new RegExp("https://maps.(?:googleapis|gstatic).com/(.*)"),
     new workbox.strategies.NetworkFirst({
@@ -46,6 +47,7 @@ workbox.routing.registerRoute(
     })
 );
 
+// Cache Images
 workbox.routing.registerRoute(
     new RegExp("https://schuldenmanager-backend.herokuapp.com/image/(.*)"),
     new workbox.strategies.NetworkFirst({
@@ -60,6 +62,7 @@ workbox.routing.registerRoute(
     })
 );
 
+// Cache Background fetches like debts and settings
 workbox.routing.registerRoute(
     new RegExp('https://schuldenmanager-backend.herokuapp.com/(.*)'),
     new workbox.strategies.NetworkFirst({
@@ -73,19 +76,25 @@ workbox.routing.registerRoute(
     }),
 );
 
-// Background Sync
+/* 
+* Background Sync Settings
+*/
 const bgSyncPlugin = new workbox.backgroundSync.Plugin('myQueue', {
     maxRetentionTime: 24 * 60, // Retry for max of 24 Hours
 });
 const networkWithBackgroundSync = new workbox.strategies.NetworkOnly({
     plugins: [bgSyncPlugin],
 });
+// Use Background Sync for different HTTP Methods
 workbox.routing.registerRoute(/\/*/, networkWithBackgroundSync, "POST");
 workbox.routing.registerRoute(/\/*/, networkWithBackgroundSync, "PUT");
 workbox.routing.registerRoute(/\/*/, networkWithBackgroundSync, "DELETE");
 
-// Push Notifications
+/**
+ * Push Notification
+ */
 
+// Push Event
 let click_open_url
 self.addEventListener('push', event => {
     let push_message = event.data.text();
@@ -95,10 +104,10 @@ self.addEventListener('push', event => {
         body: push_message,
         silent: false
     };
-    console.log("Zeige Notification an!")
     event.waitUntil(self.registration.showNotification("Still Waitin", options));
 });
 
+// Event when clicked on Banner
 self.addEventListener('notificationclick', event => {
     const clickedNotification = event.notification;
     clickedNotification.close();

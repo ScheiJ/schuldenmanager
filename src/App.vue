@@ -8,7 +8,7 @@
       flat
       style="position: fixed; height:70px;"
     >
-      <!-- Linke Seite -->
+      <!-- Left Side -->
       <router-link class="routerLink" to="/settings"><v-icon v-if="$route.path === '/'" color="light-blue lighten-2">{{ svgMenu }}</v-icon></router-link>
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack === 'Zurück'" class="routerLink" to="/"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
       <router-link v-if="$route.path === '/selectPerson' && selectedPersonPageBack !== 'Zurück'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgLessThan }}</v-icon>{{ selectedPersonPageBack }}</router-link>
@@ -19,7 +19,7 @@
 
       <v-spacer></v-spacer>
 
-      <!-- Mitte -->
+      <!-- Middle -->
       <v-toolbar-title v-if="$route.path === '/'" class="app-title-font">still waitin</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/settings'">Einstellungen</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/selectPerson'">{{ selectedPersonPageTitle }}</v-toolbar-title>
@@ -30,7 +30,7 @@
 
       <v-spacer></v-spacer>
 
-      <!-- Rechte Seite -->
+      <!-- Right Side -->
       <router-link v-if="$route.path === '/'" class="routerLink" to="/selectPerson"><v-icon color="light-blue lighten-2">{{ svgPlus }}</v-icon></router-link>
       <router-link v-if="$route.path === '/debtsOfOnePerson'" class="routerLink" to="/modifyDebt"><v-icon color="light-blue lighten-2">{{ svgPlus }}</v-icon></router-link>
       <router-link v-if="$route.path === '/settings'" class="routerLink" to="/">Fertig</router-link>
@@ -78,16 +78,19 @@
       this.getSettings();
     },
     methods: {
+      // Method to skip sw in settings
       async accept() {
         this.showUpdateUI = false;
         await this.$workbox.messageSW({ type: "SKIP_WAITING" });
       },
+      // fetch all debts
       async fetchDebts() {
         let debts = await fetchAllDebts();
         debts = debts.data.debts;
         this.$store.dispatch("updateDebts", debts);
         this.checkForNewPersons();
       },
+      //check if there was a new person
       checkForNewPersons() {
         let persons = [];
         this.debts.forEach(debt => {
@@ -97,11 +100,13 @@
         })
         this.$store.dispatch("updatePersons", persons);
       },
+      //fetch settings
       async getSettings() {
         let settings = await fetchSettings();
         settings = settings.data.settings;
         this.$store.dispatch('updateSettings', settings);
       },
+      //save debt
       async save(){
         let newDebt = {
           _id: this.getRandomString(24),
@@ -132,9 +137,9 @@
           } else newDebt.picture = this.pictureTemp;
         }
         let currentDebts = this.debts;
-        // Überprüfen, ob Neu oder Bearbeiten anhand der ID
+        // Check if new or edit
         if(this.selectedDebtId) {
-          // ID gesetzt -> Update der ID
+          // id available -> update debt
           newDebt._id = this.selectedDebtId;
           newDebt.archived = this.archivedTemp;
           await updateDebt(newDebt)
@@ -144,7 +149,7 @@
           currentDebts.splice(indexToDelete, 1);
           this.setFinishedVars();
         } else {
-          // Keine ID gesetzt -> Neuer Debt
+          // no id available -> new debt
           await addDebt(newDebt);
         }
         newDebt.amount = {
@@ -170,6 +175,7 @@
         this.$store.dispatch('updatePosition', this.positionTemp);
         if(typeof this.pictureTemp === 'string') this.$store.dispatch('updatePicture', this.pictureTemp);
       },
+      //get random string from chars as mongo id
       getRandomString(length) {
         let chars = "abcdefghijklmnopqrstuvwxyz0123456789";
         let randS = "";

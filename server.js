@@ -1,3 +1,6 @@
+/**
+ * Used to serve on Heroku on Port 80
+ */
 const express = require('express');
 const serveStatic = require("serve-static")
 const path = require('path');

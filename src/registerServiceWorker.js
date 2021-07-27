@@ -37,6 +37,7 @@ if (process.env.NODE_ENV === 'production') {
 
 import { subscribePushNotification } from "@/services/DebtsService";
 
+// Subscribe for Push Notifications
 function subscribePush(){
   return navigator.serviceWorker.register('service-worker.js')
     .then(function(registration) {
@@ -53,6 +54,7 @@ function subscribePush(){
   })
 }    
 
+//Create Key
 function urlB64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)

@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  // States
   state: {
     settings: [
       {
@@ -66,6 +67,8 @@ export default new Vuex.Store({
     timeReminder: null,
     reminderSet: false
   },
+
+  //Synchronous Mutations
   mutations: {
     updateSettings(state, value) {
       state.settings = value;
@@ -185,6 +188,7 @@ export default new Vuex.Store({
       state.reminderSet = value;
     }
   },
+  // Asynchronous Actions
   actions: {
     updateSettings(context, value) {
       context.commit("updateSettings", value);
