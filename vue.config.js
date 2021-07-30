@@ -1,6 +1,6 @@
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PreloadWebpackPlugin = require('preload-webpack-plugin');
+const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
 module.exports = {
   pwa: {
     name: "Schuldenmanager",
