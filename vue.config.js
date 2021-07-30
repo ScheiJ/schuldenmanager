@@ -21,6 +21,9 @@ module.exports = {
         maxSize: 250000,
         chunks: 'all'
       }
+    },
+    output: {
+      crossOriginLoading: 'anonymous'
     }
   }
 }
