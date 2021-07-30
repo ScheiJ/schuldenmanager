@@ -227,7 +227,7 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+  @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
   #app {
     font-family: 'Roboto', sans-serif;
