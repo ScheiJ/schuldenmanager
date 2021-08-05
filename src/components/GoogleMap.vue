@@ -12,6 +12,9 @@
 </template>
 
 <script>
+/**
+ * Google Maps Map
+ */
 import { mapState } from "vuex";
 //import VueGeolocation from 'vue-browser-geolocation';
 export default {

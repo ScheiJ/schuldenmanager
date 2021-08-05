@@ -85,6 +85,7 @@ export default {
         this.stopCameraStream();
     },
     methods: {
+        // access to the camera
         createCameraElement(mode) {
             const constraints = (window.constraints = {
                 audio: false,
@@ -94,8 +95,6 @@ export default {
                     }
                 }
             });
-
-
             navigator.mediaDevices
                 .getUserMedia(constraints)
                 .then(stream => {
@@ -105,6 +104,7 @@ export default {
                     alert("May the browser didn't support or there is some errors.");
                 });
         },
+        //stop stream
         stopCameraStream() {
             let tracks = this.$refs.camera.srcObject.getTracks();
 
@@ -112,6 +112,7 @@ export default {
                 track.stop();
             });
         },
+        //swap Camera to back or front
         swapCamera() {
             this.stopCameraStream();
             this.mode === 'environment' ? this.mode = 'user' : this.mode = 'environment';
@@ -120,6 +121,7 @@ export default {
         returnToModify() {
             this.$router.push('/modifyDebt');
         },
+        // take photo, show it in canvas and store it in the vuex store
         takePhoto() {
             let height = document.getElementById('camera').offsetHeight;
             let width = document.getElementById('camera').offsetWidth;

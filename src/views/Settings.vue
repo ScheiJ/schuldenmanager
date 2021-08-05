@@ -39,6 +39,7 @@
         ...mapState(["settings"]),
     },
     methods: {
+      //update settings in vuex and push it to backend
       async toggleSettings(settingId) {
         let indexToToggleSetting = this.findIndexInLocalArray(this.settings, settingId);
         this.$store.dispatch('toggleSetting', indexToToggleSetting);

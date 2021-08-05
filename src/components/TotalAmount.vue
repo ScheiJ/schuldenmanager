@@ -2,7 +2,7 @@
     <v-row>
       <v-col class="pa-0">
         <v-list class="pa-0 mx-0">
-          <v-list-item dark style="background-color: #37474F; position: fixed; left: 0; bottom: 0; width: 100%;">
+          <v-list-item dark class="amountListItem">
             <v-list-item-content>
               <v-list-item-title>Gesamt:</v-list-item-title>
             </v-list-item-content>
@@ -37,3 +37,13 @@ export default {
         }
 }
 </script>
+
+<style scoped>
+.amountListItem {
+  background-color: #37474F; 
+  position: fixed; 
+  left: 0; 
+  bottom: 0; 
+  width: 100%;
+}
+</style>

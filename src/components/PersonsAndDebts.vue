@@ -30,6 +30,9 @@
 </template>
 
 <script>
+/**
+ * this component is rendered on home page when 'einfache listenstruktur' is set
+ */
 import { mdiCheck, mdiGreaterThan, mdiClockTimeFour } from '@mdi/js';
 import getAmountOfPersonMixin from "../mixins/getAmountOfPersonMixin";
 import filterDebtsMixin from "../mixins/filterDebtsMixin";

@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === 'production') {
         'For more details, visit https://goo.gl/AFskqB'
       );
 
+      // Request permission status, if allowed, subscribe
       Notification.requestPermission(status => {
         if(status === "granted") subscribePush();
       })
@@ -41,6 +42,7 @@ import { subscribePushNotification } from "@/services/DebtsService";
 function subscribePush(){
   return navigator.serviceWorker.register('service-worker.js')
     .then(function(registration) {
+      // Subsricpiton Object with Key
       const subscribeOptions = {
         userVisibleOnly: true,
         applicationServerKey:

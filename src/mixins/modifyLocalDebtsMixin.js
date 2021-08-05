@@ -1,3 +1,6 @@
+/**
+ * returns index of an element of an array that mathes a special citeria
+ */
 import { mapState } from "vuex";
 export default {
     computed: {

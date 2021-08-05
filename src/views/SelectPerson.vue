@@ -63,7 +63,9 @@
     },
     methods: {
       async selectPerson(person) {
+        //if person is set, push to modifyDebt Page
         if(person) {
+          // if person has changed update it in vuex store
           if(this.selectedPersonTemp !== person) this.$store.dispatch("updateSelectedPersonTemp", person);
           this.$router.push('/modifyDebt');
         }

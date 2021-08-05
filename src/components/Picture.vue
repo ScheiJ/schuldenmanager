@@ -3,6 +3,9 @@
 </template>
 
 <script>
+/**
+ * component for debt picture
+ */
 import { mapState } from "vuex";
 export default {
     name: 'Picture',

@@ -11,6 +11,9 @@
 </template>
 
 <script>
+/**
+ * Date picker for debt time and reminder time
+ */
 import { mdiCalendarBlank, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import { mapState } from "vuex";
 export default {

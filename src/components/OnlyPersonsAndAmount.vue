@@ -3,7 +3,7 @@
       <v-col class="px-0">
         <v-list class="pa-0 mx-0">
           <v-list-item-group v-for="person in filterPersonsAgain()" v-bind:key="person.name" class="backgroundGrey">
-              <v-list-item @click="showDebtsOfOnePerson(person)" style="background-color: #FFFFFF; border-bottom: 3px solid #EEEEEE">
+              <v-list-item @click="showDebtsOfOnePerson(person)" class="backgroundWhite" style="border-bottom: 3px solid #EEEEEE">
                 <v-list-item-icon class="mt-5">
                   <div v-if="!person.archiviert" class="circleSmall" v-bind:class="{ red: parseInt(getAmountOfPerson(person.name)) < 0 }"></div>
                   <v-icon v-if="person.archiviert">{{ svgCheck }}</v-icon>
@@ -28,6 +28,9 @@
 </template>
 
 <script>
+/**
+ * this component is rendered on home page when 'einfache listenstruktur' is not set
+ */
 import { mdiCheck, mdiGreaterThan } from '@mdi/js';
 import getAmountOfPersonMixin from "../mixins/getAmountOfPersonMixin";
 import offenArchiviertMixin from "../mixins/offenArchiviertMixin";

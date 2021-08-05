@@ -1,3 +1,6 @@
+/**
+ * returns date in day.month.year format
+ */
 export default {
     methods: {
         getNormalFormat(date){

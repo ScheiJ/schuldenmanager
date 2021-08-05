@@ -13,6 +13,9 @@
 </template>
 
 <script>
+/**
+ * Delete Button to delete geolocation from debt or delete reminder
+ */
 import { mapState } from 'vuex';
 import { mdiTrashCanOutline } from '@mdi/js';
 import { setReminder } from "@/services/DebtsService";
@@ -30,9 +33,11 @@ export default {
     },
     methods: {
         async deleteThing() {
+            //delete geolocation
             if(this.$route.path === '/geolocation') {
                 this.$store.dispatch("updatePositionTemp", {lat: 0, lng:0});
                 this.$router.push('/modifyDebt');
+            //delete reminder
             } else {
                 this.$store.dispatch('updateReminderSet', false);
                 this.$store.dispatch('updateSelectedYearReminder', new Date().getFullYear());

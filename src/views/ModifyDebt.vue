@@ -176,10 +176,12 @@
       }
     },
     methods: {
+      //flips red/green coin
       turnAround() {
           if(this.isPositiveTemp === null) this.$store.dispatch("updateIsPositiveTemp", false);
           else this.$store.dispatch("updateIsPositiveTemp", !this.isPositiveTemp);
       },
+      //when user wants to take a picture 
       takePicture() {
         this.sheet = false;
         this.$router.push('/camera');
@@ -195,6 +197,7 @@
         this.$store.dispatch('updatePictureTemp', "");
         this.sheet = false;
       },
+      //when on android, just use input field, when not, use dialog
       pictureOsDecision() {
         if(this.getOS() === 'iOS' || this.getOS() === 'Android') {
           this.$refs.upload.click()

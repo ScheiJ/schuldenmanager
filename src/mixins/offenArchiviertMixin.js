@@ -1,3 +1,6 @@
+/**
+ * Mixin that has the value for 'offen' and 'archiviert'. Represents the user selection on home page
+ */
 import { mapState } from "vuex";
 export default {
     computed: {

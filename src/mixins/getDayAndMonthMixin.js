@@ -1,3 +1,6 @@
+/**
+ * returns date with values as month
+ */
 export default {
     methods: {
         selectedDate(year, monthVar, day) {

@@ -23,10 +23,10 @@
       <v-toolbar-title v-if="$route.path === '/'" class="app-title-font">still waitin</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/settings'">Einstellungen</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/selectPerson'">{{ selectedPersonPageTitle }}</v-toolbar-title>
-      <v-toolbar-title v-if="$route.path === '/modifyDebt'" style="text-decoration: underline; text-decoration-color: #4FC3F7; color: white; cursor: pointer;" @click="updateHeadingSelectPerson">{{ selectedPersonTemp }}</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/modifyDebt'" class="whitePointer underlineBlue" @click="updateHeadingSelectPerson">{{ selectedPersonTemp }}</v-toolbar-title>
       <v-toolbar-title v-if="$route.path === '/finishedDebt' || $route.path === '/debtsOfOnePerson'">{{ selectedPerson }}</v-toolbar-title>
-      <v-toolbar-title v-if="$route.path === '/date'" style="color: white; cursor: pointer;">Datum</v-toolbar-title>
-      <v-toolbar-title v-if="$route.path === '/reminder'" style="color: white; cursor: pointer;">Erinnerung am...</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/date'" class="whitePointer">Datum</v-toolbar-title>
+      <v-toolbar-title v-if="$route.path === '/reminder'" class="whitePointer">Erinnerung am...</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -74,6 +74,7 @@
           this.showUpdateUI = true;
         });
       }
+      //fetch all debts and settings at app start
       this.fetchDebts();
       this.getSettings();
     },
@@ -120,8 +121,10 @@
           picture: "",
           reminder: ""
         }
+        //picture settings
         if(this.pictureTemp) {
           if(typeof this.pictureTemp !== 'string') {
+            // if online, save picture in local storage
             if(!navigator.onLine) {
               const reader = new FileReader();
               reader.addEventListener('load', () => {
@@ -152,6 +155,7 @@
           // no id available -> new debt
           await addDebt(newDebt);
         }
+        //set amount as object for database
         newDebt.amount = {
           $numberDecimal: newDebt.amount
         }
@@ -210,6 +214,7 @@
         this.$store.dispatch('updatePictureTemp', this.picture)
         this.$router.push('/modifyDebt');
       },
+      //Set reminder
       async setReminder() {
         if(this.dateCloseButton === 'Fertig') {
           let reminder = new Date(this.selectedYearReminder, this.selectedMonthReminder, this.selectedDayReminder, this.timeReminder.substring(0,2), this.timeReminder.substring(3,5));
@@ -217,6 +222,7 @@
             id: this.selectedDebtId,
             reminder: reminder
           });
+          //update reminder in store
           let debtToChangeReminder = this.findIndexInLocalArray(this.debts, this.selectedDebtId);
           this.$store.dispatch("setTimeReminder", [debtToChangeReminder, reminder.toISOString()]);
         }
@@ -255,6 +261,16 @@
     color: #4FC3F7; 
     cursor: pointer;
     margin-top: 5px;
+  }
+
+  .whitePointer {
+    color: white; 
+    cursor: pointer;
+  }
+
+  .underlineBlue {
+    text-decoration: underline; 
+    text-decoration-color: #4FC3F7;
   }
 
   /* Global Styles */

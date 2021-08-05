@@ -152,6 +152,7 @@ export default {
     Picture: () => import(/* webpackPrefetch: true */'@/components/Picture.vue'),
   },
   methods: {
+    // marks debt from offen -> archiviert and archiviert -> offen
     async toggleArchive() {
       await toggleArchiveDebt({
         id: this.selectedDebtId,
@@ -166,6 +167,7 @@ export default {
       this.$store.dispatch("deleteDebt", indexToDelete);
       this.$router.push("/");
     },
+    // share current debt with other applications
     share() {
       if (navigator.share) {
         navigator.share({
