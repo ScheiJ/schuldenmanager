@@ -4,7 +4,7 @@
 const express = require('express');
 const serveStatic = require("serve-static")
 const path = require('path');
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 
 function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
