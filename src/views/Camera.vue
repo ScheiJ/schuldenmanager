@@ -71,7 +71,7 @@ export default {
     name: "Camera",
     data() {
         return {
-            mode: 'environment',
+            mode: 'user',
             pictureTaken: false
         }
     },
