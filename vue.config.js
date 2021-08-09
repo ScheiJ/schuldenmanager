@@ -4,8 +4,10 @@ module.exports = {
     name: "Schuldenmanager",
     themeColor: "#37474F",
     msTileColor: "#37474F",
-    favicon32: './public/icons/favicon-32x32.png',
-    favicon16: './public/icons/favicon-16x16.png',
+    iconPaths: {
+      favicon32: './public/icons/favicon-32x32.png',
+      favicon16: './public/icons/favicon-16x16.png'
+    },
     appleMobileWebAppCache: "yes",
     workboxPluginMode: "InjectManifest",
     workboxOptions: {
